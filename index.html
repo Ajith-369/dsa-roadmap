@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Patterns — Interview Mastery</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08090a;--bg2:#0f1012;--bg3:#16181c;--card:#0d0f11;--cyan:#00e5ff;--purple:#b16cff;--green:#39ff8a;--orange:#ff6b35;--red:#ff3860;--white:#eef2f7;--text:#b0bec5;--text2:#546e7a;--border:#1e2329;--border2:rgba(0,229,255,0.2);--cyandim:rgba(0,229,255,0.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 0% 50%,rgba(0,229,255,0.03),transparent 60%),radial-gradient(ellipse at 100% 50%,rgba(177,108,255,0.03),transparent 60%);pointer-events:none;z-index:0}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+
+/* HEADER */
+header{border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;background:rgba(8,9,10,.97);backdrop-filter:blur(10px);z-index:100}
+.hdr{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--cyan);letter-spacing:2px}
+.logo span{color:var(--purple)}
+.xpwrap{flex:1;max-width:340px;min-width:150px}
+.xpmeta{display:flex;justify-content:space-between;font-size:9px;color:var(--text2);margin-bottom:4px;letter-spacing:1px}
+.xpmeta .lv{color:var(--cyan)}
+.xptrack{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.xpfill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple));border-radius:2px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.hdrstats{display:flex;gap:16px}
+.hstat{text-align:center}
+.hval{font-size:16px;color:var(--cyan);display:block;font-weight:700}
+.hlbl{font-size:8px;color:var(--text2);letter-spacing:1px}
+.resetbtn{font-size:9px;color:var(--text2);border:1px solid var(--border);background:transparent;padding:5px 10px;cursor:pointer;transition:all .2s;letter-spacing:1px;font-family:'JetBrains Mono',monospace}
+.resetbtn:hover{color:var(--red);border-color:var(--red)}
+
+/* HERO */
+.hero{padding:48px 0 28px;text-align:center}
+.herotag{font-size:9px;color:var(--cyan);letter-spacing:4px;border:1px solid var(--border2);display:inline-block;padding:4px 14px;margin-bottom:16px}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(32px,6vw,58px);font-weight:800;color:var(--white);line-height:1.05;margin-bottom:10px;letter-spacing:-1px}
+.hero h1 em{color:var(--cyan);font-style:normal}
+.hero h1 span{color:var(--purple)}
+.hero p{font-size:12px;color:var(--text2);max-width:440px;margin:0 auto 20px;line-height:1.8}
+
+/* LEVEL PILLS */
+.lvlwrap{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:32px}
+.lvlpill{font-size:9px;padding:4px 12px;border:1px solid var(--border);color:var(--text2);letter-spacing:1px;transition:all .3s;cursor:default}
+.lvlpill.lit{border-color:var(--border2);color:var(--cyan)}
+
+/* ACHIEVEMENTS */
+.achiev{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px;padding:16px;background:var(--card);border:1px solid var(--border)}
+.badge{display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--border);opacity:.25;transition:all .4s;flex:1;min-width:120px}
+.badge.earned{opacity:1;border-color:var(--border2);background:var(--cyandim)}
+.bicon{font-size:14px}
+.bname{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--white);display:block}
+.bdesc{font-size:8px;color:var(--text2);letter-spacing:1px}
+
+/* PATTERN NAV */
+.pnav{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;margin-bottom:28px}
+.pbtn{font-size:8px;letter-spacing:1px;padding:9px 6px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;text-align:center;transition:all .2s;line-height:1.6;font-family:'JetBrains Mono',monospace}
+.pbtn:hover{border-color:var(--border2);color:var(--cyan)}
+.pbtn.active{border-color:var(--cyan);color:var(--cyan);background:var(--cyandim)}
+.pbtn.done{border-color:rgba(57,255,138,.3);color:rgba(57,255,138,.7)}
+
+/* PATTERN SECTION */
+.pattern{display:none}
+.pattern.active{display:block}
+.plrhdr{display:flex;align-items:flex-start;gap:16px;padding:22px;background:var(--card);border:1px solid var(--border);border-left:2px solid var(--cyan);margin-bottom:12px}
+.plricon{font-size:30px;line-height:1}
+.plrinfo h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--white);letter-spacing:1px;margin-bottom:3px}
+.plrinfo p{color:var(--text2);font-size:11px;line-height:1.7}
+.plrxp{margin-left:auto;font-size:9px;color:var(--cyan);text-align:right;white-space:nowrap;letter-spacing:1px}
+.plrxp span{font-size:18px;display:block;font-weight:700}
+
+/* PROBLEM CARD */
+.pcard{background:var(--card);border:1px solid var(--border);margin-bottom:8px;transition:border-color .2s}
+.pcard:hover{border-color:rgba(0,229,255,.15)}
+.pcard.completed{border-color:rgba(57,255,138,.2)}
+.phead{display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;user-select:none}
+.pnum{font-size:8px;color:var(--text2);letter-spacing:2px;min-width:40px}
+.ptitlew{flex:1}
+.ptitle{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;display:block;margin-bottom:1px}
+.psub{font-size:10px;color:var(--text2)}
+.pprogw{display:flex;align-items:center;gap:7px}
+.ppbar{width:50px;height:2px;background:var(--border);border-radius:1px;overflow:hidden}
+.ppfill{height:100%;background:var(--cyan);border-radius:1px;transition:width .4s}
+.pxp{font-size:9px;color:var(--cyan);white-space:nowrap;letter-spacing:1px}
+.diff{font-size:8px;padding:2px 6px;letter-spacing:1px;flex-shrink:0}
+.diff.easy{background:rgba(57,255,138,.1);color:var(--green);border:1px solid rgba(57,255,138,.2)}
+.diff.med{background:rgba(255,107,53,.1);color:var(--orange);border:1px solid rgba(255,107,53,.2)}
+.diff.hard{background:rgba(255,56,96,.1);color:var(--red);border:1px solid rgba(255,56,96,.2)}
+.pcheck{width:18px;height:18px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;transition:all .2s;flex-shrink:0}
+.pcheck:hover{border-color:var(--cyan)}
+.pcheck.done{background:var(--cyan);border-color:var(--cyan);color:#000;font-weight:700}
+.pexp{color:var(--text2);font-size:12px;transition:transform .3s}
+.pcard.open .pexp{transform:rotate(180deg)}
+.pbody{display:none;padding:0 16px 16px;border-top:1px solid var(--border)}
+.pcard.open .pbody{display:block}
+
+/* BODY CONTENT */
+.concept-box{margin-top:12px;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-left:2px solid var(--purple)}
+.concept-lbl{font-size:8px;color:var(--purple);letter-spacing:2px;margin-bottom:6px}
+.concept-txt{font-size:12px;color:var(--text);line-height:1.7}
+.when-box{margin-top:8px;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-left:2px solid var(--cyan)}
+.when-lbl{font-size:8px;color:var(--cyan);letter-spacing:2px;margin-bottom:6px}
+.when-txt{font-size:12px;color:var(--text);line-height:1.7}
+.code-box{margin-top:10px;background:#0a0c0e;border:1px solid var(--border);padding:12px 14px;overflow-x:auto}
+.code-lbl{font-size:8px;color:var(--text2);letter-spacing:2px;margin-bottom:8px}
+pre{font-size:11px;color:#abb2bf;line-height:1.6;white-space:pre}
+.kw{color:#c678dd}
+.fn{color:#61afef}
+.cm{color:#5c6370;font-style:italic}
+.st{color:#98c379}
+.nm{color:#d19a66}
+
+.tlbl{font-size:8px;color:var(--text2);letter-spacing:2px;margin:12px 0 6px}
+.titem{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:1px solid var(--border);margin-bottom:3px;background:var(--bg2);cursor:pointer;transition:all .15s}
+.titem:hover{border-color:rgba(0,229,255,.15)}
+.titem.done{opacity:.45}
+.titem.done .ttxt{text-decoration:line-through;color:var(--text2)}
+.tcb{width:12px;height:12px;border:1px solid var(--border);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:8px;transition:all .2s}
+.titem.done .tcb{background:var(--cyan);border-color:var(--cyan);color:#000}
+.ttxt{font-size:11px;line-height:1.5;flex:1}
+.ttype{font-size:7px;padding:2px 5px;flex-shrink:0;margin-top:2px;letter-spacing:1px}
+.ttype.code{background:rgba(0,229,255,.08);color:var(--cyan);border:1px solid rgba(0,229,255,.15)}
+.ttype.watch{background:rgba(177,108,255,.08);color:var(--purple);border:1px solid rgba(177,108,255,.15)}
+.ttype.solve{background:rgba(57,255,138,.08);color:var(--green);border:1px solid rgba(57,255,138,.15)}
+.ttype.read{background:rgba(255,107,53,.08);color:var(--orange);border:1px solid rgba(255,107,53,.15)}
+
+.problems-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px;margin-top:6px}
+.prob-item{padding:8px 10px;background:var(--bg2);border:1px solid var(--border);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px}
+.prob-item:hover{border-color:rgba(0,229,255,.15)}
+.prob-item.done{opacity:.45;border-color:rgba(57,255,138,.2)}
+.prob-item.done .prob-name{text-decoration:line-through;color:var(--text2)}
+.prob-cb{width:12px;height:12px;border:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;transition:all .2s}
+.prob-item.done .prob-cb{background:var(--green);border-color:var(--green);color:#000}
+.prob-name{font-size:10px;flex:1;line-height:1.4}
+.prob-diff{font-size:7px;padding:1px 5px;letter-spacing:1px;flex-shrink:0}
+.prob-diff.E{background:rgba(57,255,138,.1);color:var(--green);border:1px solid rgba(57,255,138,.2)}
+.prob-diff.M{background:rgba(255,107,53,.1);color:var(--orange);border:1px solid rgba(255,107,53,.2)}
+.prob-diff.H{background:rgba(255,56,96,.1);color:var(--red);border:1px solid rgba(255,56,96,.2)}
+
+.interview-box{margin-top:10px;padding:10px 14px;border:1px solid rgba(177,108,255,.2);background:rgba(177,108,255,.04)}
+.int-lbl{font-size:8px;color:var(--purple);letter-spacing:2px;margin-bottom:5px}
+.int-txt{font-size:11px;color:var(--text);line-height:1.7}
+
+.comp{margin:20px 0;padding:16px;background:var(--bg2);border:1px solid var(--border2)}
+.clbl{font-size:8px;color:var(--cyan);letter-spacing:2px;margin-bottom:8px}
+.citem{display:flex;align-items:flex-start;gap:8px;font-size:11px;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer;line-height:1.5}
+.citem:last-child{border-bottom:none}
+.cdot{width:5px;height:5px;border:1px solid var(--text2);flex-shrink:0;margin-top:4px;transition:all .2s}
+.citem.done .cdot{background:var(--cyan);border-color:var(--cyan)}
+.citem.done span{text-decoration:line-through;color:var(--text2)}
+
+.toast{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--border2);padding:10px 16px;font-size:10px;color:var(--cyan);transform:translateY(60px);opacity:0;transition:all .4s;z-index:999;max-width:240px;font-family:'JetBrains Mono',monospace}
+.toast.show{transform:translateY(0);opacity:1}
+.ttitle{font-size:12px;margin-bottom:2px;font-weight:700}
+.tsub{color:var(--text2);font-size:9px}
+footer{text-align:center;padding:32px 0;font-size:9px;color:var(--text2);border-top:1px solid var(--border);margin-top:48px;letter-spacing:2px}
+@media(max-width:600px){.plrhdr{flex-direction:column}.plrxp{margin-left:0}.problems-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="hdr">
+  <div class="logo">DSA<span>.exe</span></div>
+  <div class="xpwrap">
+    <div class="xpmeta"><span class="lv" id="lvlbl">RANK 0 — ARRAY WALKER</span><span id="xplbl">0 / 500 XP</span></div>
+    <div class="xptrack"><div class="xpfill" id="xpfill" style="width:0%"></div></div>
+  </div>
+  <div class="hdrstats">
+    <div class="hstat"><span class="hval" id="totxp">0</span><span class="hlbl">TOTAL XP</span></div>
+    <div class="hstat"><span class="hval" id="probdone">0</span><span class="hlbl">SOLVED</span></div>
+    <div class="hstat"><span class="hval" id="patdone">0</span><span class="hlbl">PATTERNS</span></div>
+  </div>
+  <button class="resetbtn" id="resetBtn">RESET</button>
+</div></div></header>
+
+<main class="wrap">
+  <div class="hero">
+    <div class="herotag">Technical Interview Mastery</div>
+    <h1><em>Pattern</em> Based<br><span>DSA</span> Mastery</h1>
+    <p>Don't memorize solutions. Recognize patterns. Every problem is a variation of 14 core patterns. Learn the pattern — solve infinite problems.</p>
+  </div>
+
+  <div class="lvlwrap">
+    <div class="lvlpill" id="r0">ARRAY WALKER</div>
+    <div class="lvlpill" id="r1">POINTER HANDLER</div>
+    <div class="lvlpill" id="r2">SLIDING WINDOW</div>
+    <div class="lvlpill" id="r3">TREE CLIMBER</div>
+    <div class="lvlpill" id="r4">GRAPH EXPLORER</div>
+    <div class="lvlpill" id="r5">DP ARCHITECT</div>
+    <div class="lvlpill" id="r6">ALGORITHM MASTER</div>
+  </div>
+
+  <div class="achiev">
+    <div class="badge" id="b0"><span class="bicon">⚡</span><div><span class="bname">First Solve</span><span class="bdesc">Complete first problem</span></div></div>
+    <div class="badge" id="b1"><span class="bicon">🎯</span><div><span class="bname">Pattern Hunter</span><span class="bdesc">Master 3 patterns</span></div></div>
+    <div class="badge" id="b2"><span class="bicon">🌳</span><div><span class="bname">Tree Whisperer</span><span class="bdesc">Complete Trees pattern</span></div></div>
+    <div class="badge" id="b3"><span class="bicon">💎</span><div><span class="bname">DP Survivor</span><span class="bdesc">Complete Dynamic Programming</span></div></div>
+    <div class="badge" id="b4"><span class="bicon">🚀</span><div><span class="bname">Interview Ready</span><span class="bdesc">Reach Rank 5</span></div></div>
+    <div class="badge" id="b5"><span class="bicon">👑</span><div><span class="bname">Algorithm Master</span><span class="bdesc">Complete all patterns</span></div></div>
+  </div>
+
+  <div class="pnav" id="pnav">
+    <button class="pbtn active" data-pattern="p0">📦<br>ARRAYS &amp;<br>HASHING</button>
+    <button class="pbtn" data-pattern="p1">👉<br>TWO<br>POINTERS</button>
+    <button class="pbtn" data-pattern="p2">🪟<br>SLIDING<br>WINDOW</button>
+    <button class="pbtn" data-pattern="p3">📚<br>STACK &amp;<br>QUEUE</button>
+    <button class="pbtn" data-pattern="p4">🔍<br>BINARY<br>SEARCH</button>
+    <button class="pbtn" data-pattern="p5">🔗<br>LINKED<br>LISTS</button>
+    <button class="pbtn" data-pattern="p6">🌳<br>TREES &amp;<br>RECURSION</button>
+    <button class="pbtn" data-pattern="p7">🕸<br>GRAPHS &amp;<br>BFS/DFS</button>
+    <button class="pbtn" data-pattern="p8">⛰<br>HEAP &amp;<br>PRIORITY Q</button>
+    <button class="pbtn" data-pattern="p9">🔙<br>BACK-<br>TRACKING</button>
+    <button class="pbtn" data-pattern="p10">💎<br>DYNAMIC<br>PROG</button>
+    <button class="pbtn" data-pattern="p11">🔢<br>INTERVALS<br>&amp; GREEDY</button>
+    <button class="pbtn" data-pattern="p12">🔡<br>STRING<br>PATTERNS</button>
+    <button class="pbtn" data-pattern="p13">🧮<br>BIT<br>MANIP</button>
+  </div>
+
+  <div id="p0" class="pattern active"></div>
+  <div id="p1" class="pattern"></div>
+  <div id="p2" class="pattern"></div>
+  <div id="p3" class="pattern"></div>
+  <div id="p4" class="pattern"></div>
+  <div id="p5" class="pattern"></div>
+  <div id="p6" class="pattern"></div>
+  <div id="p7" class="pattern"></div>
+  <div id="p8" class="pattern"></div>
+  <div id="p9" class="pattern"></div>
+  <div id="p10" class="pattern"></div>
+  <div id="p11" class="pattern"></div>
+  <div id="p12" class="pattern"></div>
+  <div id="p13" class="pattern"></div>
+</main>
+
+<div class="toast" id="toast"><div class="ttitle" id="ttitle">+XP</div><div class="tsub" id="tsub">Pattern recognized.</div></div>
+<footer><div class="wrap">DSA.EXE — RECOGNIZE PATTERNS. SOLVE ANYTHING.</div></footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyC6GEvz3VK2RKpC3EXqXxRPSrk-G6e5sZw",authDomain:"roadmap-sync-5fc1f.firebaseapp.com",projectId:"roadmap-sync-5fc1f",storageBucket:"roadmap-sync-5fc1f.firebasestorage.app",messagingSenderId:"834903662109",appId:"1:834903662109:web:1b1cc3cc8ae8c852a1b0f4"};
+const _app=initializeApp(firebaseConfig);
+const _db=getFirestore(_app);
+const DOC_REF=doc(_db,"progress","dsa_patterns");
+
+const D={
+p0:{icon:"📦",title:"Arrays & Hashing",sub:"The foundation. 90% of problems touch arrays. Master this first.",xp:400,diff:"easy",
+  concept:"Arrays store elements in contiguous memory. Hashing gives O(1) lookup. Together they solve most frequency, duplicate, and lookup problems in one pass.",
+  when:"Use when: counting frequencies, finding duplicates, checking if two arrays match, grouping anagrams, two-sum style problems.",
+  code:`<span class="kw">def</span> <span class="fn">two_sum</span>(nums, target):
+  <span class="cm"># HashMap for O(n) instead of O(n²)</span>
+  seen = {}
+  <span class="kw">for</span> i, num <span class="kw">in</span> <span class="fn">enumerate</span>(nums):
+      complement = target - num
+      <span class="kw">if</span> complement <span class="kw">in</span> seen:
+          <span class="kw">return</span> [seen[complement], i]
+      seen[num] = i`,
+  tasks:[
+    {type:"watch",text:"NeetCode — Arrays & Hashing full section (YouTube — free, best DSA channel)"},
+    {type:"code",text:"Implement: two_sum, contains_duplicate, valid_anagram from scratch in Python"},
+    {type:"solve",text:"LeetCode #1 Two Sum — solve without looking at solution first"},
+    {type:"solve",text:"LeetCode #242 Valid Anagram"},
+    {type:"solve",text:"LeetCode #49 Group Anagrams"},
+    {type:"solve",text:"LeetCode #347 Top K Frequent Elements"},
+    {type:"solve",text:"LeetCode #271 Encode and Decode Strings"}
+  ],
+  problems:[
+    {n:"Two Sum",d:"E",id:"p0pb0"},{n:"Valid Anagram",d:"E",id:"p0pb1"},{n:"Contains Duplicate",d:"E",id:"p0pb2"},
+    {n:"Group Anagrams",d:"M",id:"p0pb3"},{n:"Top K Frequent",d:"M",id:"p0pb4"},{n:"Product of Array Except Self",d:"M",id:"p0pb5"},
+    {n:"Encode/Decode Strings",d:"M",id:"p0pb6"},{n:"Longest Consecutive Sequence",d:"M",id:"p0pb7"},
+    {n:"Maximum Subarray",d:"E",id:"p0pb8"},{n:"Merge Sorted Array",d:"E",id:"p0pb9"},
+    {n:"Sort Colors",d:"M",id:"p0pb10"},{n:"Longest Common Prefix",d:"E",id:"p0pb11"},
+    {n:"Roman to Integer",d:"E",id:"p0pb12"},{n:"Valid Sudoku",d:"M",id:"p0pb13"},
+    {n:"Happy Number",d:"E",id:"p0pb14"},{n:"Ransom Note",d:"E",id:"p0pb15"},
+    {n:"First Unique Character",d:"E",id:"p0pb16"},{n:"Top K Frequent Words",d:"M",id:"p0pb17"}
+  ],
+  interview:"Interviewer pattern: 'Can you do this in O(n)?' — answer is almost always HashMap. Time: O(n), Space: O(n). Always mention tradeoff.",
+  comp:["I can implement a HashMap from scratch","I know when to use a Set vs a Map","I solved all 8 problems without hints","I can explain time/space complexity for each solution"]
+},
+p1:{icon:"👉",title:"Two Pointers",sub:"Two pointers moving toward each other or in the same direction. Turns O(n²) into O(n).",xp:350,diff:"easy",
+  concept:"Place two pointers at different positions and move them based on conditions. Eliminates nested loops. Works on sorted arrays and strings.",
+  when:"Use when: array is sorted, finding pairs that sum to target, palindrome checks, removing duplicates, container problems.",
+  code:`<span class="kw">def</span> <span class="fn">two_sum_sorted</span>(numbers, target):
+  left, right = <span class="nm">0</span>, <span class="fn">len</span>(numbers) - <span class="nm">1</span>
+  <span class="kw">while</span> left < right:
+      total = numbers[left] + numbers[right]
+      <span class="kw">if</span> total == target:
+          <span class="kw">return</span> [left+<span class="nm">1</span>, right+<span class="nm">1</span>]
+      <span class="kw">elif</span> total < target:
+          left += <span class="nm">1</span>
+      <span class="kw">else</span>:
+          right -= <span class="nm">1</span>`,
+  tasks:[
+    {type:"watch",text:"NeetCode — Two Pointers section (YouTube)"},
+    {type:"code",text:"Implement: is_palindrome, two_sum_sorted from scratch"},
+    {type:"solve",text:"LeetCode #125 Valid Palindrome"},
+    {type:"solve",text:"LeetCode #167 Two Sum II"},
+    {type:"solve",text:"LeetCode #11 Container With Most Water"},
+    {type:"solve",text:"LeetCode #15 3Sum — hardest of this pattern"}
+  ],
+  problems:[
+    {n:"Valid Palindrome",d:"E",id:"p1pb0"},{n:"Two Sum II",d:"M",id:"p1pb1"},{n:"3Sum",d:"M",id:"p1pb2"},
+    {n:"Container With Most Water",d:"M",id:"p1pb3"},{n:"Trapping Rain Water",d:"H",id:"p1pb4"},
+    {n:"Boats to Save People",d:"M",id:"p1pb5"}
+  ],
+  interview:"Key insight to say: 'Since the array is sorted, I can use two pointers to avoid O(n²). Move left pointer if sum is too small, right if too large.'",
+  comp:["I can identify when two pointers applies","I solved all 5 problems","I can solve 3Sum without hints","I explain the O(n) vs O(n²) tradeoff clearly"]
+},
+p2:{icon:"🪟",title:"Sliding Window",sub:"A dynamic window that expands and shrinks. Handles subarray and substring problems in O(n).",xp:350,diff:"easy",
+  concept:"Maintain a window of elements. Expand right to add elements, shrink left when a condition breaks. Avoids recomputing overlapping subarrays.",
+  when:"Use when: finding max/min subarray of size k, longest substring with constraint, minimum window containing all chars.",
+  code:`<span class="kw">def</span> <span class="fn">max_sum_subarray</span>(nums, k):
+  window_sum = <span class="fn">sum</span>(nums[:k])
+  max_sum = window_sum
+  <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(k, <span class="fn">len</span>(nums)):
+      <span class="cm"># Slide: add right, remove left</span>
+      window_sum += nums[i] - nums[i-k]
+      max_sum = <span class="fn">max</span>(max_sum, window_sum)
+  <span class="kw">return</span> max_sum`,
+  tasks:[
+    {type:"watch",text:"NeetCode — Sliding Window section (YouTube)"},
+    {type:"code",text:"Implement fixed window (max sum of size k) from scratch"},
+    {type:"code",text:"Implement variable window (longest substring without repeat)"},
+    {type:"solve",text:"LeetCode #121 Best Time to Buy and Sell Stock"},
+    {type:"solve",text:"LeetCode #3 Longest Substring Without Repeating Characters"},
+    {type:"solve",text:"LeetCode #424 Longest Repeating Character Replacement"},
+    {type:"solve",text:"LeetCode #76 Minimum Window Substring — hardest"}
+  ],
+  problems:[
+    {n:"Best Time to Buy Stock",d:"E",id:"p2pb0"},{n:"Longest Substring No Repeat",d:"M",id:"p2pb1"},
+    {n:"Longest Repeating Char Replace",d:"M",id:"p2pb2"},{n:"Permutation in String",d:"M",id:"p2pb3"},
+    {n:"Minimum Window Substring",d:"H",id:"p2pb4"},{n:"Sliding Window Maximum",d:"H",id:"p2pb5"}
+  ],
+  interview:"Key phrase: 'I'll use a variable sliding window — expand right until constraint breaks, shrink left to restore it. This gives O(n).'",
+  comp:["I understand fixed vs variable window","I can implement both window types from scratch","I solved all 6 problems","I can solve Minimum Window Substring without hints"]
+},
+p3:{icon:"📚",title:"Stack & Queue",sub:"LIFO and FIFO. Essential for parsing, matching brackets, and monotonic problems.",xp:300,diff:"easy",
+  concept:"Stack (LIFO): last in first out. Queue (FIFO): first in first out. Monotonic stack maintains increasing or decreasing order — key for next greater element problems.",
+  when:"Use when: matching brackets/parentheses, undo operations, next greater/smaller element, evaluating expressions, BFS uses queue.",
+  code:`<span class="kw">def</span> <span class="fn">is_valid_brackets</span>(s):
+  stack = []
+  mapping = {<span class="st">')'</span>: <span class="st">'('</span>, <span class="st">'}'</span>: <span class="st">'{'</span>, <span class="st">']'</span>: <span class="st">'['</span>}
+  <span class="kw">for</span> char <span class="kw">in</span> s:
+      <span class="kw">if</span> char <span class="kw">in</span> mapping:
+          top = stack.pop() <span class="kw">if</span> stack <span class="kw">else</span> <span class="st">'#'</span>
+          <span class="kw">if</span> mapping[char] != top:
+              <span class="kw">return</span> <span class="kw">False</span>
+      <span class="kw">else</span>:
+          stack.append(char)
+  <span class="kw">return not</span> stack`,
+  tasks:[
+    {type:"watch",text:"NeetCode — Stack section (YouTube)"},
+    {type:"code",text:"Implement a Stack class from scratch using a list"},
+    {type:"solve",text:"LeetCode #20 Valid Parentheses"},
+    {type:"solve",text:"LeetCode #155 Min Stack"},
+    {type:"solve",text:"LeetCode #150 Evaluate Reverse Polish Notation"},
+    {type:"solve",text:"LeetCode #739 Daily Temperatures — monotonic stack"}
+  ],
+  problems:[
+    {n:"Valid Parentheses",d:"E",id:"p3pb0"},{n:"Min Stack",d:"M",id:"p3pb1"},{n:"Evaluate RPN",d:"M",id:"p3pb2"},
+    {n:"Generate Parentheses",d:"M",id:"p3pb3"},{n:"Daily Temperatures",d:"M",id:"p3pb4"},{n:"Car Fleet",d:"M",id:"p3pb5"},
+    {n:"Largest Rectangle in Histogram",d:"H",id:"p3pb6"},
+    {n:"Next Greater Element I",d:"E",id:"p3pb7"},{n:"Longest Valid Parentheses",d:"H",id:"p3pb8"},
+    {n:"Maximal Rectangle",d:"H",id:"p3pb9"},{n:"Validate Stack Sequences",d:"M",id:"p3pb10"},
+    {n:"Design Circular Deque",d:"M",id:"p3pb11"}
+  ],
+  interview:"Monotonic stack is the hardest part — mention it proactively: 'I can use a monotonic decreasing stack to find next greater element in O(n).'",
+  comp:["I can implement Stack and Queue from scratch","I understand when to use monotonic stack","I solved all 7 problems","I can explain monotonic stack to someone in 30 seconds"]
+},
+p4:{icon:"🔍",title:"Binary Search",sub:"Eliminate half the search space every step. O(log n) is almost always the answer when the array is sorted.",xp:300,diff:"med",
+  concept:"On sorted data, compare middle element to target. Eliminate left or right half. Not just for searching — use on answer space when you can binary search the answer itself.",
+  when:"Use when: array is sorted, finding target in rotated array, finding min/max that satisfies a condition, search in 2D matrix.",
+  code:`<span class="kw">def</span> <span class="fn">binary_search</span>(nums, target):
+  left, right = <span class="nm">0</span>, <span class="fn">len</span>(nums) - <span class="nm">1</span>
+  <span class="kw">while</span> left <= right:
+      mid = (left + right) // <span class="nm">2</span>
+      <span class="kw">if</span> nums[mid] == target:
+          <span class="kw">return</span> mid
+      <span class="kw">elif</span> nums[mid] < target:
+          left = mid + <span class="nm">1</span>
+      <span class="kw">else</span>:
+          right = mid - <span class="nm">1</span>
+  <span class="kw">return</span> -<span class="nm">1</span>`,
+  tasks:[
+    {type:"watch",text:"NeetCode — Binary Search section (YouTube)"},
+    {type:"code",text:"Implement binary search from scratch — get the off-by-one right"},
+    {type:"solve",text:"LeetCode #704 Binary Search — the classic"},
+    {type:"solve",text:"LeetCode #74 Search a 2D Matrix"},
+    {type:"solve",text:"LeetCode #33 Search in Rotated Sorted Array"},
+    {type:"solve",text:"LeetCode #153 Find Minimum in Rotated Sorted Array"},
+    {type:"solve",text:"LeetCode #4 Median of Two Sorted Arrays — hardest binary search"}
+  ],
+  problems:[
+    {n:"Binary Search",d:"E",id:"p4pb0"},{n:"Search 2D Matrix",d:"M",id:"p4pb1"},{n:"Koko Eating Bananas",d:"M",id:"p4pb2"},
+    {n:"Search Rotated Array",d:"M",id:"p4pb3"},{n:"Find Min in Rotated Array",d:"M",id:"p4pb4"},
+    {n:"Time Based Key-Value Store",d:"M",id:"p4pb5"},{n:"Median of Two Sorted Arrays",d:"H",id:"p4pb6"},
+    {n:"Search Insert Position",d:"E",id:"p4pb7"},{n:"Find First and Last Position",d:"M",id:"p4pb8"}
+  ],
+  interview:"Key insight: 'left <= right' vs 'left < right' — know when to use each. Common bug is infinite loop from wrong mid assignment.",
+  comp:["I implement binary search without off-by-one bugs","I can binary search on answer space","I solved all 7 problems","I solved Search in Rotated Array without hints"]
+},
+p5:{icon:"🔗",title:"Linked Lists",sub:"Pointer manipulation. Reverse, merge, detect cycles. Classic interview staple.",xp:300,diff:"med",
+  concept:"Nodes connected by pointers. No random access — must traverse. Fast/slow pointer (Floyd's algorithm) detects cycles and finds midpoints. Dummy node simplifies edge cases.",
+  when:"Use when: reversing a list, merging sorted lists, detecting cycles, finding middle node, removing nth from end.",
+  code:`<span class="kw">def</span> <span class="fn">reverse_list</span>(head):
+  prev, curr = <span class="kw">None</span>, head
+  <span class="kw">while</span> curr:
+      next_node = curr.next  <span class="cm"># save</span>
+      curr.next = prev       <span class="cm"># reverse</span>
+      prev = curr            <span class="cm"># move prev</span>
+      curr = next_node       <span class="cm"># move curr</span>
+  <span class="kw">return</span> prev`,
+  tasks:[
+    {type:"watch",text:"NeetCode — Linked Lists section (YouTube)"},
+    {type:"code",text:"Implement LinkedList class with insert, delete, reverse from scratch"},
+    {type:"code",text:"Implement Floyd's cycle detection algorithm from scratch"},
+    {type:"solve",text:"LeetCode #206 Reverse Linked List"},
+    {type:"solve",text:"LeetCode #21 Merge Two Sorted Lists"},
+    {type:"solve",text:"LeetCode #141 Linked List Cycle"},
+    {type:"solve",text:"LeetCode #23 Merge K Sorted Lists — hard"}
+  ],
+  problems:[
+    {n:"Reverse Linked List",d:"E",id:"p5pb0"},{n:"Merge Two Sorted Lists",d:"E",id:"p5pb1"},{n:"Linked List Cycle",d:"E",id:"p5pb2"},
+    {n:"Reorder List",d:"M",id:"p5pb3"},{n:"Remove Nth From End",d:"M",id:"p5pb4"},{n:"Copy List with Random Ptr",d:"M",id:"p5pb5"},
+    {n:"Find Duplicate Number",d:"M",id:"p5pb6"},{n:"Merge K Sorted Lists",d:"H",id:"p5pb7"},{n:"Reverse Nodes in K-Group",d:"H",id:"p5pb8"},
+    {n:"Remove Linked List Elements",d:"E",id:"p5pb9"},{n:"Add Two Numbers",d:"M",id:"p5pb10"},
+    {n:"Palindrome Linked List",d:"E",id:"p5pb11"},{n:"Sort List",d:"M",id:"p5pb12"}
+  ],
+  interview:"Draw the pointers on paper/whiteboard ALWAYS. Linked list bugs are almost always pointer reassignment order. Say: 'Let me trace through with a small example first.'",
+  comp:["I can reverse a linked list in my sleep","I understand Floyd's fast/slow pointer","I solved all 9 problems","I can solve Merge K Sorted Lists without hints"]
+},
+p6:{icon:"🌳",title:"Trees & Recursion",sub:"Binary trees, BSTs, traversals. Recursion is the key that unlocks trees.",xp:400,diff:"med",
+  concept:"Tree = recursive structure. Every tree problem is: do something at current node + recurse left + recurse right. BFS uses queue for level order. DFS uses recursion or stack.",
+  when:"Use when: traversal problems, path sums, validating BST, finding LCA, level order traversal, symmetric trees.",
+  code:`<span class="kw">def</span> <span class="fn">max_depth</span>(root):
+  <span class="kw">if not</span> root:
+      <span class="kw">return</span> <span class="nm">0</span>
+  <span class="cm"># Recurse both sides, take max + 1</span>
+  left = <span class="fn">max_depth</span>(root.left)
+  right = <span class="fn">max_depth</span>(root.right)
+  <span class="kw">return</span> <span class="nm">1</span> + <span class="fn">max</span>(left, right)`,
+  tasks:[
+    {type:"watch",text:"NeetCode — Trees section full (YouTube)"},
+    {type:"code",text:"Implement BST with insert, search, delete from scratch"},
+    {type:"code",text:"Implement all 3 DFS traversals: inorder, preorder, postorder"},
+    {type:"code",text:"Implement BFS level order traversal using a queue"},
+    {type:"solve",text:"LeetCode #104 Maximum Depth of Binary Tree"},
+    {type:"solve",text:"LeetCode #226 Invert Binary Tree"},
+    {type:"solve",text:"LeetCode #102 Binary Tree Level Order Traversal"},
+    {type:"solve",text:"LeetCode #235 Lowest Common Ancestor of BST"},
+    {type:"solve",text:"LeetCode #124 Binary Tree Maximum Path Sum — hard"}
+  ],
+  problems:[
+    {n:"Max Depth Binary Tree",d:"E",id:"p6pb0"},{n:"Same Tree",d:"E",id:"p6pb1"},{n:"Invert Binary Tree",d:"E",id:"p6pb2"},
+    {n:"Max Depth of N-ary Tree",d:"E",id:"p6pb3"},{n:"Level Order Traversal",d:"M",id:"p6pb4"},{n:"Right Side View",d:"M",id:"p6pb5"},
+    {n:"Count Good Nodes",d:"M",id:"p6pb6"},{n:"Validate BST",d:"M",id:"p6pb7"},{n:"LCA of BST",d:"M",id:"p6pb8"},
+    {n:"Kth Smallest in BST",d:"M",id:"p6pb9"},{n:"Construct from Preorder/Inorder",d:"M",id:"p6pb10"},{n:"Max Path Sum",d:"H",id:"p6pb11"},
+    {n:"Binary Tree Inorder Traversal",d:"E",id:"p6pb12"},{n:"Binary Tree Preorder Traversal",d:"E",id:"p6pb13"},
+    {n:"Balanced Binary Tree",d:"E",id:"p6pb14"},{n:"Diameter of Binary Tree",d:"E",id:"p6pb15"},
+    {n:"Count Complete Tree Nodes",d:"M",id:"p6pb16"}
+  ],
+  interview:"The template for 90% of tree problems: base case (if not root: return), left = recurse(root.left), right = recurse(root.right), return something with root.val. Memorize this template.",
+  comp:["I can implement a BST from scratch","I know all 3 DFS traversals and BFS","I solved all 12 problems","I can solve Max Path Sum without hints"]
+},
+p7:{icon:"🕸",title:"Graphs & BFS/DFS",sub:"Networks of nodes. BFS finds shortest path. DFS explores everything. Used everywhere.",xp:400,diff:"med",
+  concept:"Graph = nodes + edges. Represent as adjacency list. BFS: level by level (shortest path). DFS: go deep first (explore all paths). Track visited to avoid infinite loops.",
+  when:"Use when: islands problems, shortest path, connected components, detecting cycles, course prerequisites (topological sort).",
+  code:`<span class="kw">def</span> <span class="fn">num_islands</span>(grid):
+  <span class="kw">if not</span> grid: <span class="kw">return</span> <span class="nm">0</span>
+  islands = <span class="nm">0</span>
+  <span class="kw">def</span> <span class="fn">dfs</span>(r, c):
+      <span class="kw">if</span> r < <span class="nm">0</span> <span class="kw">or</span> c < <span class="nm">0</span> <span class="kw">or</span> r >= <span class="fn">len</span>(grid) \
+         <span class="kw">or</span> c >= <span class="fn">len</span>(grid[<span class="nm">0</span>]) <span class="kw">or</span> grid[r][c] == <span class="st">'0'</span>:
+          <span class="kw">return</span>
+      grid[r][c] = <span class="st">'0'</span>  <span class="cm"># mark visited</span>
+      <span class="fn">dfs</span>(r+<span class="nm">1</span>,c); <span class="fn">dfs</span>(r-<span class="nm">1</span>,c); <span class="fn">dfs</span>(r,c+<span class="nm">1</span>); <span class="fn">dfs</span>(r,c-<span class="nm">1</span>)
+  <span class="kw">for</span> r <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(grid)):
+      <span class="kw">for</span> c <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(grid[<span class="nm">0</span>])):
+          <span class="kw">if</span> grid[r][c] == <span class="st">'1'</span>:
+              <span class="fn">dfs</span>(r,c); islands += <span class="nm">1</span>
+  <span class="kw">return</span> islands`,
+  tasks:[
+    {type:"watch",text:"NeetCode — Graphs full section (YouTube)"},
+    {type:"code",text:"Implement BFS and DFS from scratch on an adjacency list"},
+    {type:"solve",text:"LeetCode #200 Number of Islands — the DFS template"},
+    {type:"solve",text:"LeetCode #133 Clone Graph"},
+    {type:"solve",text:"LeetCode #207 Course Schedule — topological sort"},
+    {type:"solve",text:"LeetCode #417 Pacific Atlantic Water Flow"},
+    {type:"solve",text:"LeetCode #127 Word Ladder — BFS shortest path"}
+  ],
+  problems:[
+    {n:"Number of Islands",d:"M",id:"p7pb0"},{n:"Max Area of Island",d:"M",id:"p7pb1"},{n:"Clone Graph",d:"M",id:"p7pb2"},
+    {n:"Walls and Gates",d:"M",id:"p7pb3"},{n:"Rotting Oranges",d:"M",id:"p7pb4"},{n:"Pacific Atlantic Water Flow",d:"M",id:"p7pb5"},
+    {n:"Course Schedule",d:"M",id:"p7pb6"},{n:"Course Schedule II",d:"M",id:"p7pb7"},{n:"Number of Connected Components",d:"M",id:"p7pb8"},
+    {n:"Graph Valid Tree",d:"M",id:"p7pb9"},{n:"Word Ladder",d:"H",id:"p7pb10"},
+    {n:"Number of Provinces",d:"M",id:"p7pb11"},{n:"Is Graph Bipartite",d:"M",id:"p7pb12"}
+  ],
+  interview:"Always say: 'I'll represent the graph as an adjacency list and use a visited set to prevent revisiting nodes.' This shows you know what you're doing immediately.",
+  comp:["I implement BFS and DFS from scratch","I understand topological sort","I solved all 11 problems","I can explain the difference between BFS and DFS and when to use each"]
+},
+p8:{icon:"⛰",title:"Heap & Priority Queue",sub:"Always get the min or max in O(log n). Essential for top-K and scheduling problems.",xp:250,diff:"med",
+  concept:"Heap = complete binary tree where parent is always min (or max) of its children. Python's heapq is a min-heap. For max-heap negate values. O(log n) insert/delete, O(1) peek.",
+  when:"Use when: finding k largest/smallest elements, merging k sorted lists, scheduling, median from data stream.",
+  code:`<span class="kw">import</span> heapq
+
+<span class="kw">def</span> <span class="fn">k_largest</span>(nums, k):
+  <span class="cm"># Min-heap of size k</span>
+  heap = []
+  <span class="kw">for</span> num <span class="kw">in</span> nums:
+      heapq.heappush(heap, num)
+      <span class="kw">if</span> <span class="fn">len</span>(heap) > k:
+          heapq.heappop(heap)
+  <span class="kw">return</span> <span class="fn">list</span>(heap)`,
+  tasks:[
+    {type:"watch",text:"NeetCode — Heap / Priority Queue section (YouTube)"},
+    {type:"code",text:"Implement a min-heap class from scratch (insert, extract_min)"},
+    {type:"solve",text:"LeetCode #703 Kth Largest Element in a Stream"},
+    {type:"solve",text:"LeetCode #1046 Last Stone Weight"},
+    {type:"solve",text:"LeetCode #973 K Closest Points to Origin"},
+    {type:"solve",text:"LeetCode #295 Find Median from Data Stream — hard"}
+  ],
+  problems:[
+    {n:"Kth Largest in Stream",d:"E",id:"p8pb0"},{n:"Last Stone Weight",d:"E",id:"p8pb1"},{n:"K Closest Points",d:"M",id:"p8pb2"},
+    {n:"Kth Largest Element",d:"M",id:"p8pb3"},{n:"Task Scheduler",d:"M",id:"p8pb4"},{n:"Design Twitter",d:"M",id:"p8pb5"},
+    {n:"Find Median from Stream",d:"H",id:"p8pb6"},
+    {n:"Find K Pairs Smallest Sums",d:"M",id:"p8pb7"},{n:"Kth Smallest in Sorted Matrix",d:"M",id:"p8pb8"},
+    {n:"Reorganize String",d:"M",id:"p8pb9"}
+  ],
+  interview:"Python trick: heapq is min-heap only. For max-heap insert -num. Always mention O(n log k) for top-k problems versus O(n log n) for sorting.",
+  comp:["I understand min-heap vs max-heap","I can implement a heap from scratch","I solved all 7 problems","I know when heap is better than sorting"]
+},
+p9:{icon:"🔙",title:"Backtracking",sub:"Try everything. If it fails, undo and try next. Generates all combinations and permutations.",xp:300,diff:"hard",
+  concept:"Build solution incrementally. At each step try all options. If current path fails, backtrack (undo last choice) and try next option. Template: choose, explore, unchoose.",
+  when:"Use when: generating all permutations/combinations/subsets, solving Sudoku, N-Queens, word search on a grid.",
+  code:`<span class="kw">def</span> <span class="fn">subsets</span>(nums):
+  result = []
+  <span class="kw">def</span> <span class="fn">backtrack</span>(start, current):
+      result.append(current[:])  <span class="cm"># add copy</span>
+      <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(start, <span class="fn">len</span>(nums)):
+          current.append(nums[i])   <span class="cm"># choose</span>
+          <span class="fn">backtrack</span>(i+<span class="nm">1</span>, current)    <span class="cm"># explore</span>
+          current.pop()             <span class="cm"># unchoose</span>
+  <span class="fn">backtrack</span>(<span class="nm">0</span>, [])
+  <span class="kw">return</span> result`,
+  tasks:[
+    {type:"watch",text:"NeetCode — Backtracking section (YouTube)"},
+    {type:"code",text:"Implement the choose-explore-unchoose template from scratch"},
+    {type:"solve",text:"LeetCode #78 Subsets"},
+    {type:"solve",text:"LeetCode #39 Combination Sum"},
+    {type:"solve",text:"LeetCode #46 Permutations"},
+    {type:"solve",text:"LeetCode #79 Word Search — grid backtracking"},
+    {type:"solve",text:"LeetCode #51 N-Queens — hardest backtracking"}
+  ],
+  problems:[
+    {n:"Subsets",d:"M",id:"p9pb0"},{n:"Combination Sum",d:"M",id:"p9pb1"},{n:"Combination Sum II",d:"M",id:"p9pb2"},
+    {n:"Permutations",d:"M",id:"p9pb3"},{n:"Subsets II",d:"M",id:"p9pb4"},{n:"Word Search",d:"M",id:"p9pb5"},
+    {n:"Palindrome Partitioning",d:"M",id:"p9pb6"},{n:"Letter Combinations",d:"M",id:"p9pb7"},{n:"N-Queens",d:"H",id:"p9pb8"},
+    {n:"Combinations",d:"M",id:"p9pb9"},{n:"Pow(x,n)",d:"M",id:"p9pb10"}
+  ],
+  interview:"The template is the key — state it out loud: 'I'll use backtracking. Choose an option, recurse, then undo the choice.' Draw the decision tree before coding.",
+  comp:["I know the choose-explore-unchoose template","I can draw the decision tree for any backtracking problem","I solved all 9 problems","I solved N-Queens without looking at solution"]
+},
+p10:{icon:"💎",title:"Dynamic Programming",sub:"The hardest pattern. Memoize subproblems. Think: can I reuse a previous answer?",xp:500,diff:"hard",
+  concept:"Break problem into overlapping subproblems. Store results to avoid recomputation. Two approaches: top-down (memoization with recursion) or bottom-up (tabulation with iteration).",
+  when:"Use when: optimization problems (min/max), counting problems, decision problems (can you do X), problems with overlapping subproblems.",
+  code:`<span class="kw">def</span> <span class="fn">climb_stairs</span>(n):
+  <span class="cm"># dp[i] = ways to reach step i</span>
+  <span class="kw">if</span> n <= <span class="nm">2</span>: <span class="kw">return</span> n
+  dp = [<span class="nm">0</span>] * (n+<span class="nm">1</span>)
+  dp[<span class="nm">1</span>], dp[<span class="nm">2</span>] = <span class="nm">1</span>, <span class="nm">2</span>
+  <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">3</span>, n+<span class="nm">1</span>):
+      dp[i] = dp[i-<span class="nm">1</span>] + dp[i-<span class="nm">2</span>]  <span class="cm"># recurrence</span>
+  <span class="kw">return</span> dp[n]`,
+  tasks:[
+    {type:"watch",text:"NeetCode — 1D DP section (YouTube) — do this before 2D DP"},
+    {type:"watch",text:"NeetCode — 2D DP section (YouTube) — after 1D is solid"},
+    {type:"code",text:"Implement Fibonacci both ways: top-down memo and bottom-up tabulation"},
+    {type:"solve",text:"LeetCode #70 Climbing Stairs — the DP hello world"},
+    {type:"solve",text:"LeetCode #198 House Robber"},
+    {type:"solve",text:"LeetCode #322 Coin Change"},
+    {type:"solve",text:"LeetCode #300 Longest Increasing Subsequence"},
+    {type:"solve",text:"LeetCode #1143 Longest Common Subsequence — 2D DP"},
+    {type:"solve",text:"LeetCode #0/1 Knapsack — classic, not on LC but implement it"}
+  ],
+  problems:[
+    {n:"Climbing Stairs",d:"E",id:"p10pb0"},{n:"Min Cost Climbing Stairs",d:"E",id:"p10pb1"},{n:"House Robber",d:"M",id:"p10pb2"},
+    {n:"House Robber II",d:"M",id:"p10pb3"},{n:"Longest Palindromic Substring",d:"M",id:"p10pb4"},{n:"Palindromic Substrings",d:"M",id:"p10pb5"},
+    {n:"Decode Ways",d:"M",id:"p10pb6"},{n:"Coin Change",d:"M",id:"p10pb7"},{n:"Max Product Subarray",d:"M",id:"p10pb8"},
+    {n:"Word Break",d:"M",id:"p10pb9"},{n:"Longest Increasing Subsequence",d:"M",id:"p10pb10"},{n:"Unique Paths",d:"M",id:"p10pb11"},
+    {n:"Longest Common Subsequence",d:"M",id:"p10pb12"},{n:"Buy/Sell Stock with Cooldown",d:"M",id:"p10pb13"},
+    {n:"Edit Distance",d:"H",id:"p10pb14"},{n:"Burst Balloons",d:"H",id:"p10pb15"},
+    {n:"Coin Change II",d:"M",id:"p10pb16"},{n:"Partition Equal Subset Sum",d:"M",id:"p10pb17"}
+  ],
+  interview:"DP interview approach: 1) Define what dp[i] means in plain English. 2) Write the recurrence relation. 3) Identify base cases. 4) Code. Always say dp[i] definition out loud first.",
+  comp:["I can identify DP problems vs greedy problems","I can implement both memoization and tabulation","I solved all 16 problems","I can explain the recurrence relation for Coin Change and LCS"]
+},
+p11:{icon:"🔢",title:"Intervals & Greedy",sub:"Overlapping intervals and locally optimal choices. Clean patterns once you see them.",xp:250,diff:"med",
+  concept:"Intervals: sort by start, then merge/insert based on overlap. Greedy: make the locally optimal choice at each step — no backtracking needed. Works when local optimal leads to global optimal.",
+  when:"Intervals: merging meeting times, inserting intervals, minimum platforms. Greedy: jump game, gas station, activity selection.",
+  code:`<span class="kw">def</span> <span class="fn">merge_intervals</span>(intervals):
+  intervals.sort(key=<span class="kw">lambda</span> x: x[<span class="nm">0</span>])
+  merged = [intervals[<span class="nm">0</span>]]
+  <span class="kw">for</span> start, end <span class="kw">in</span> intervals[<span class="nm">1</span>:]:
+      <span class="kw">if</span> start <= merged[-<span class="nm">1</span>][<span class="nm">1</span>]:  <span class="cm"># overlap</span>
+          merged[-<span class="nm">1</span>][<span class="nm">1</span>] = <span class="fn">max</span>(merged[-<span class="nm">1</span>][<span class="nm">1</span>], end)
+      <span class="kw">else</span>:
+          merged.append([start, end])
+  <span class="kw">return</span> merged`,
+  tasks:[
+    {type:"watch",text:"NeetCode — Intervals section (YouTube)"},
+    {type:"watch",text:"NeetCode — Greedy section (YouTube)"},
+    {type:"solve",text:"LeetCode #56 Merge Intervals"},
+    {type:"solve",text:"LeetCode #57 Insert Interval"},
+    {type:"solve",text:"LeetCode #435 Non-overlapping Intervals"},
+    {type:"solve",text:"LeetCode #55 Jump Game"},
+    {type:"solve",text:"LeetCode #134 Gas Station"}
+  ],
+  problems:[
+    {n:"Insert Interval",d:"M",id:"p11pb0"},{n:"Merge Intervals",d:"M",id:"p11pb1"},{n:"Non-overlapping Intervals",d:"M",id:"p11pb2"},
+    {n:"Meeting Rooms",d:"E",id:"p11pb3"},{n:"Meeting Rooms II",d:"M",id:"p11pb4"},{n:"Jump Game",d:"M",id:"p11pb5"},
+    {n:"Jump Game II",d:"M",id:"p11pb6"},{n:"Gas Station",d:"M",id:"p11pb7"},{n:"Hand of Straights",d:"M",id:"p11pb8"}
+  ],
+  interview:"For intervals: 'I'll sort by start time first, then scan once.' For greedy: justify WHY greedy works — 'local optimal choice here is X because...'",
+  comp:["I can merge intervals in my sleep","I understand when greedy is valid vs when DP is needed","I solved all 9 problems","I can solve Jump Game II without hints"]
+},
+p12:{icon:"🔡",title:"String Patterns",sub:"KMP, tries, and pattern matching. Less common but high signal in interviews.",xp:200,diff:"hard",
+  concept:"Trie: prefix tree for fast string lookups and autocomplete. O(m) search where m = word length. KMP: find pattern in text in O(n+m). Rabin-Karp: hashing for pattern matching.",
+  when:"Use when: autocomplete/search prefix, word dictionary lookups, counting distinct substrings, finding pattern in text efficiently.",
+  code:`<span class="kw">class</span> <span class="fn">TrieNode</span>:
+  <span class="kw">def</span> <span class="fn">__init__</span>(self):
+      self.children = {}
+      self.is_end = <span class="kw">False</span>
+
+<span class="kw">class</span> <span class="fn">Trie</span>:
+  <span class="kw">def</span> <span class="fn">__init__</span>(self):
+      self.root = <span class="fn">TrieNode</span>()
+  <span class="kw">def</span> <span class="fn">insert</span>(self, word):
+      node = self.root
+      <span class="kw">for</span> ch <span class="kw">in</span> word:
+          <span class="kw">if</span> ch <span class="kw">not in</span> node.children:
+              node.children[ch] = <span class="fn">TrieNode</span>()
+          node = node.children[ch]
+      node.is_end = <span class="kw">True</span>`,
+  tasks:[
+    {type:"watch",text:"NeetCode — Tries section (YouTube)"},
+    {type:"code",text:"Implement Trie from scratch with insert, search, startsWith"},
+    {type:"solve",text:"LeetCode #208 Implement Trie"},
+    {type:"solve",text:"LeetCode #211 Design Add and Search Words"},
+    {type:"solve",text:"LeetCode #212 Word Search II — Trie + Backtracking"},
+    {type:"read",text:"Read about KMP algorithm — understand the failure function concept"}
+  ],
+  problems:[
+    {n:"Implement Trie",d:"M",id:"p12pb0"},{n:"Design Add and Search Words",d:"M",id:"p12pb1"},
+    {n:"Word Search II",d:"H",id:"p12pb2"},{n:"Longest Word in Dictionary",d:"M",id:"p12pb3"}
+  ],
+  interview:"If asked about string search: mention KMP exists for O(n+m). If asked about prefix matching: Trie is the answer. These show depth beyond basic string manipulation.",
+  comp:["I can implement a Trie from scratch","I understand when Trie beats HashMap","I solved all 4 problems","I can explain KMP at a high level"]
+},
+p13:{icon:"🧮",title:"Bit Manipulation",sub:"XOR tricks, bit masking. Rare but signals strong CS fundamentals.",xp:150,diff:"hard",
+  concept:"Operate directly on binary representations. XOR: x^x=0, x^0=x. Left shift = multiply by 2. Right shift = divide by 2. AND with mask extracts specific bits.",
+  when:"Use when: finding single number in duplicates (XOR), counting set bits, swapping without temp variable, checking power of 2.",
+  code:`<span class="kw">def</span> <span class="fn">single_number</span>(nums):
+  <span class="cm"># XOR all numbers — duplicates cancel out</span>
+  result = <span class="nm">0</span>
+  <span class="kw">for</span> num <span class="kw">in</span> nums:
+      result ^= num
+  <span class="kw">return</span> result
+  <span class="cm"># x ^ x = 0, x ^ 0 = x</span>
+  <span class="cm"># So all pairs cancel, single remains</span>`,
+  tasks:[
+    {type:"watch",text:"NeetCode — Bit Manipulation section (YouTube)"},
+    {type:"code",text:"Implement: count set bits, check power of 2, find single number"},
+    {type:"solve",text:"LeetCode #136 Single Number — classic XOR"},
+    {type:"solve",text:"LeetCode #191 Number of 1 Bits"},
+    {type:"solve",text:"LeetCode #338 Counting Bits"},
+    {type:"solve",text:"LeetCode #190 Reverse Bits"}
+  ],
+  problems:[
+    {n:"Single Number",d:"E",id:"p13pb0"},{n:"Number of 1 Bits",d:"E",id:"p13pb1"},{n:"Counting Bits",d:"E",id:"p13pb2"},
+    {n:"Reverse Bits",d:"E",id:"p13pb3"},{n:"Missing Number",d:"E",id:"p13pb4"},{n:"Sum of Two Integers",d:"M",id:"p13pb5"}
+  ],
+  interview:"XOR trick for single number always impresses — say: 'Since XOR of a number with itself is 0, all duplicates cancel, leaving only the single element.' Clean and O(1) space.",
+  comp:["I understand XOR properties","I can solve Single Number without hints","I solved all 6 problems","I can explain bit manipulation to a non-technical person"]
+}
+};
+
+const RANKS=[{min:0,name:"ARRAY WALKER"},{min:500,name:"POINTER HANDLER"},{min:1000,name:"SLIDING WINDOW"},{min:1600,name:"TREE CLIMBER"},{min:2200,name:"GRAPH EXPLORER"},{min:2800,name:"DP ARCHITECT"},{min:3400,name:"ALGORITHM MASTER"}];
+
+let S={t:{},p:{},c:{}};
+
+async function load(){try{const snap=await getDoc(DOC_REF);return snap.exists()?snap.data():{t:{},p:{},c:{}}}catch(e){return{t:{},p:{},c:{}}}}
+async function save(){try{await setDoc(DOC_REF,S);}catch(e){console.error('Save failed:',e);}}
+
+function getTotalXP(){
+  let xp=0;
+  Object.entries(D).forEach(([pid,p])=>{
+    const tDone=p.tasks.filter((_,i)=>S.t[pid+'_t_'+i]).length;
+    xp+=Math.floor((tDone/p.tasks.length)*(p.xp*0.4));
+    const pDone=p.problems.filter(pb=>S.p[pb.id]).length;
+    xp+=Math.floor((pDone/p.problems.length)*(p.xp*0.6));
+  });
+  return Math.round(xp);
+}
+
+function getRank(xp){for(let i=RANKS.length-1;i>=0;i--){if(xp>=RANKS[i].min)return i;}return 0;}
+
+function updateHeader(){
+  const xp=getTotalXP(),ri=getRank(xp),r=RANKS[ri],nx=RANKS[Math.min(ri+1,RANKS.length-1)];
+  const pct=ri===RANKS.length-1?100:Math.round(((xp-r.min)/(nx.min-r.min))*100);
+  document.getElementById('lvlbl').textContent='RANK '+ri+' — '+r.name;
+  document.getElementById('xplbl').textContent=xp+' / '+nx.min+' XP';
+  document.getElementById('xpfill').style.width=pct+'%';
+  document.getElementById('totxp').textContent=xp;
+  for(let i=0;i<RANKS.length;i++){const e=document.getElementById('r'+i);if(e)e.classList.toggle('lit',i<=ri);}
+  let totalP=0,doneP=0,donePatterns=0;
+  Object.entries(D).forEach(([pid,p])=>{
+    totalP+=p.problems.length;
+    const dp=p.problems.filter(pb=>S.p[pb.id]).length;
+    doneP+=dp;
+    const td=p.tasks.filter((_,i)=>S.t[pid+'_t_'+i]).length;
+    if(dp===p.problems.length&&td===p.tasks.length)donePatterns++;
+  });
+  document.getElementById('probdone').textContent=doneP;
+  document.getElementById('patdone').textContent=donePatterns;
+  // achievements
+  if(doneP>0)document.getElementById('b0').classList.add('earned');
+  if(donePatterns>=3)document.getElementById('b1').classList.add('earned');
+  const treesDone=D.p6.problems.every(pb=>S.p[pb.id])&&D.p6.tasks.every((_,i)=>S.t['p6_t_'+i]);
+  if(treesDone)document.getElementById('b2').classList.add('earned');
+  const dpDone=D.p10.problems.every(pb=>S.p[pb.id])&&D.p10.tasks.every((_,i)=>S.t['p10_t_'+i]);
+  if(dpDone)document.getElementById('b3').classList.add('earned');
+  if(ri>=5)document.getElementById('b4').classList.add('earned');
+  if(donePatterns===Object.keys(D).length)document.getElementById('b5').classList.add('earned');
+}
+
+function toast(t,s){const e=document.getElementById('toast');document.getElementById('ttitle').textContent=t;document.getElementById('tsub').textContent=s;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2800);}
+
+function toggleTask(pid,idx){const k=pid+'_t_'+idx;S.t[k]=!S.t[k];save();renderAll();updateHeader();if(S.t[k])toast('+XP','Task complete.');}
+function toggleProblem(pbid){S.p[pbid]=!S.p[pbid];save();renderAll();updateHeader();if(S.p[pbid])toast('+XP EARNED','Problem solved.');}
+function toggleComp(pid,idx){const k=pid+'_c_'+idx;S.c[k]=!S.c[k];save();renderAll();}
+function toggleOpen(pid,si){const k='o_'+pid+'_'+si;S.t[k]=!S.t[k];save();const c=document.getElementById('card_'+pid+'_'+si);if(c)c.classList.toggle('open',!!S.t[k]);}
+
+function showPattern(pid){
+  document.querySelectorAll('.pattern').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(pid).classList.add('active');
+  const idx=Object.keys(D).indexOf(pid);
+  document.querySelectorAll('.pbtn')[idx].classList.add('active');
+}
+
+function confirmReset(){if(confirm('Reset ALL progress?')){S={t:{},p:{},c:{}};save();renderAll();updateHeader();toast('RESET','Starting from zero.');}}
+
+function renderAll(){
+  Object.entries(D).forEach(([pid,p])=>{
+    const el=document.getElementById(pid);if(!el)return;
+    const tDone=p.tasks.filter((_,i)=>S.t[pid+'_t_'+i]).length;
+    const pDone=p.problems.filter(pb=>S.p[pb.id]).length;
+    const allDone=tDone===p.tasks.length&&pDone===p.problems.length;
+    const pct=Math.round(((tDone+pDone)/(p.tasks.length+p.problems.length))*100);
+
+    let h=`<div class="plrhdr">
+      <div class="plricon">${p.icon}</div>
+      <div class="plrinfo"><h2>${p.title}</h2><p>${p.sub}</p></div>
+      <div class="plrxp"><span>${p.xp} XP</span>PATTERN REWARD<br><span style="font-size:11px;color:var(--text2)">${pct}% DONE · ${pDone}/${p.problems.length} SOLVED</span></div>
+    </div>`;
+
+    // Main card
+    const open=!!S.t['o_'+pid+'_main'];
+    h+=`<div class="pcard ${allDone?'completed':''} ${open?'open':''}" id="card_${pid}_main">
+      <div class="phead" data-action="open" data-pid="${pid}">
+        <span class="pnum">PATTERN</span>
+        <div class="ptitlew"><span class="ptitle" style="color:${allDone?'var(--green)':'var(--white)'}">${p.title}</span><span class="psub">concept + code template + problems</span></div>
+        <div class="pprogw"><div class="ppbar"><div class="ppfill" style="width:${pct}%"></div></div><span class="pxp">${tDone+pDone}/${p.tasks.length+p.problems.length}</span></div>
+        <span class="diff ${p.diff}">${p.diff.toUpperCase()}</span>
+        <span class="pexp">▼</span>
+      </div>
+      <div class="pbody">
+        <div class="concept-box"><div class="concept-lbl">CONCEPT</div><div class="concept-txt">${p.concept}</div></div>
+        <div class="when-box"><div class="when-lbl">WHEN TO USE THIS PATTERN</div><div class="when-txt">${p.when}</div></div>
+        <div class="code-box"><div class="code-lbl">CODE TEMPLATE</div><pre>${p.code}</pre></div>
+        <div class="tlbl">STUDY TASKS</div>`;
+
+    p.tasks.forEach((t,ti)=>{
+      const done=S.t[pid+'_t_'+ti];
+      h+=`<div class="titem ${done?'done':''}" data-action="task" data-pid="${pid}" data-idx="${ti}"><div class="tcb">${done?'✓':''}</div><span class="ttxt">${t.text}</span><span class="ttype ${t.type}">${t.type.toUpperCase()}</span></div>`;
+    });
+
+    h+=`<div class="tlbl" style="margin-top:12px">LEETCODE PROBLEMS</div><div class="problems-grid">`;
+    p.problems.forEach(pb=>{
+      const done=S.p[pb.id];
+      h+=`<div class="prob-item ${done?'done':''}" data-action="prob" data-pbid="${pb.id}"><div class="prob-cb">${done?'✓':''}</div><span class="prob-name">${pb.n}</span><span class="prob-diff ${pb.d}">${pb.d}</span></div>`;
+    });
+    h+=`</div>`;
+
+    h+=`<div class="interview-box"><div class="int-lbl">INTERVIEW TECHNIQUE</div><div class="int-txt">${p.interview}</div></div>`;
+    h+=`</div></div>`;
+
+    if(p.comp&&p.comp.length){
+      h+=`<div class="comp"><div class="clbl">PATTERN MASTERY CHECK</div>`;
+      p.comp.forEach((c,i)=>{const done=S.c[pid+'_c_'+i];h+=`<div class="citem ${done?'done':''}" data-action="comp" data-pid="${pid}" data-idx="${i}"><div class="cdot"></div><span>${c}</span></div>`;});
+      h+=`</div>`;
+    }
+
+    el.innerHTML=h;
+  });
+
+  document.querySelectorAll('.pbtn').forEach((btn,idx)=>{
+    const pid=Object.keys(D)[idx];
+    const p=D[pid];
+    const allDone=p.tasks.every((_,i)=>S.t[pid+'_t_'+i])&&p.problems.every(pb=>S.p[pb.id]);
+    btn.classList.toggle('done',allDone);
+  });
+}
+
+load().then(loaded=>{
+  S=loaded;
+  renderAll();
+  updateHeader();
+
+  // Event delegation — runs after DOM is ready
+  document.addEventListener('click', e => {
+    const patBtn = e.target.closest('[data-pattern]');
+    if(patBtn){ showPattern(patBtn.dataset.pattern); return; }
+
+    const openEl = e.target.closest('[data-action="open"]');
+    if(openEl){ toggleOpen(openEl.dataset.pid,'main'); return; }
+
+    const taskEl = e.target.closest('[data-action="task"]');
+    if(taskEl){ toggleTask(taskEl.dataset.pid, +taskEl.dataset.idx); return; }
+
+    const probEl = e.target.closest('[data-action="prob"]');
+    if(probEl){ toggleProblem(probEl.dataset.pbid); return; }
+
+    const compEl = e.target.closest('[data-action="comp"]');
+    if(compEl){ toggleComp(compEl.dataset.pid, +compEl.dataset.idx); return; }
+
+    if(e.target.closest('#resetBtn')){ confirmReset(); return; }
+  });
+});
+</script>
+</body>
+</html>

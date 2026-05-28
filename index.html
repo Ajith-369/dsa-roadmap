@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Patterns — Complete Learning Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08090a;--bg2:#0f1012;--bg3:#16181c;--card:#0d0f11;--cyan:#00e5ff;--purple:#b16cff;--green:#39ff8a;--orange:#ff6b35;--red:#ff3860;--yellow:#ffd93d;--white:#eef2f7;--text:#b0bec5;--text2:#546e7a;--border:#1e2329;--border2:rgba(0,229,255,0.2);--cyandim:rgba(0,229,255,0.08);--greendim:rgba(57,255,138,0.08);--yellowdim:rgba(255,217,61,0.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 0% 50%,rgba(0,229,255,0.03),transparent 60%),radial-gradient(ellipse at 100% 50%,rgba(177,108,255,0.03),transparent 60%);pointer-events:none;z-index:0}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+header{border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;background:rgba(8,9,10,.97);backdrop-filter:blur(10px);z-index:100}
+.hdr{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--cyan);letter-spacing:2px}
+.logo span{color:var(--purple)}
+.xpwrap{flex:1;max-width:340px;min-width:150px}
+.xpmeta{display:flex;justify-content:space-between;font-size:9px;color:var(--text2);margin-bottom:4px;letter-spacing:1px}
+.xpmeta .lv{color:var(--cyan)}
+.xptrack{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.xpfill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple));border-radius:2px;transition:width .7s}
+.hdrstats{display:flex;gap:16px}
+.hstat{text-align:center}
+.hval{font-size:16px;color:var(--cyan);display:block;font-weight:700}
+.hlbl{font-size:8px;color:var(--text2);letter-spacing:1px}
+.syncst{font-size:9px;color:var(--text2);letter-spacing:1px}
+.resetbtn{font-size:9px;color:var(--text2);border:1px solid var(--border);background:transparent;padding:5px 10px;cursor:pointer;letter-spacing:1px;font-family:'JetBrains Mono',monospace}
+.resetbtn:hover{color:var(--red);border-color:var(--red)}
+.hero{padding:44px 0 24px;text-align:center}
+.herotag{font-size:9px;color:var(--cyan);letter-spacing:4px;border:1px solid var(--border2);display:inline-block;padding:4px 14px;margin-bottom:14px}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,52px);font-weight:800;color:var(--white);line-height:1.05;margin-bottom:8px}
+.hero h1 em{color:var(--cyan);font-style:normal}
+.hero h1 span{color:var(--purple)}
+.hero p{font-size:11px;color:var(--text2);max-width:500px;margin:0 auto 20px;line-height:1.8}
+.lvlwrap{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.lvlpill{font-size:9px;padding:4px 12px;border:1px solid var(--border);color:var(--text2);letter-spacing:1px;transition:all .3s}
+.lvlpill.lit{border-color:var(--border2);color:var(--cyan)}
+.achiev{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;padding:14px;background:var(--card);border:1px solid var(--border)}
+.badge{display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--border);opacity:.25;transition:all .4s;flex:1;min-width:110px}
+.badge.earned{opacity:1;border-color:var(--border2);background:var(--cyandim)}
+.bicon{font-size:13px}
+.bname{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--white);display:block}
+.bdesc{font-size:8px;color:var(--text2);letter-spacing:1px}
+.pnav{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:5px;margin-bottom:24px}
+.pbtn{font-size:8px;letter-spacing:1px;padding:8px 5px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;text-align:center;transition:all .2s;line-height:1.6;font-family:'JetBrains Mono',monospace}
+.pbtn:hover{border-color:var(--border2);color:var(--cyan)}
+.pbtn.active{border-color:var(--cyan);color:var(--cyan);background:var(--cyandim)}
+.pbtn.done{border-color:rgba(57,255,138,.3);color:rgba(57,255,138,.7)}
+.pattern{display:none}
+.pattern.active{display:block}
+.plrhdr{display:flex;align-items:flex-start;gap:16px;padding:20px;background:var(--card);border:1px solid var(--border);border-left:2px solid var(--cyan);margin-bottom:0}
+.plricon{font-size:28px;line-height:1}
+.plrinfo h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--white);letter-spacing:1px;margin-bottom:3px}
+.plrinfo p{color:var(--text2);font-size:11px;line-height:1.7}
+.plrxp{margin-left:auto;font-size:9px;color:var(--cyan);text-align:right;white-space:nowrap}
+.plrxp span{font-size:16px;display:block;font-weight:700}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);background:var(--card);overflow-x:auto}
+.tab{font-size:9px;padding:10px 14px;border:none;background:transparent;color:var(--text2);cursor:pointer;letter-spacing:1px;font-family:'JetBrains Mono',monospace;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.tab:hover{color:var(--cyan)}
+.tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.tabcontent{display:none;background:var(--card);border:1px solid var(--border);border-top:none;padding:18px}
+.tabcontent.active{display:block}
+.theory-block{margin-bottom:14px;padding:13px;background:var(--bg3);border:1px solid var(--border)}
+.theory-block.cyan{border-left:2px solid var(--cyan)}
+.theory-block.purple{border-left:2px solid var(--purple)}
+.theory-block.green{border-left:2px solid var(--green)}
+.theory-block.yellow{border-left:2px solid var(--yellow)}
+.theory-block.red{border-left:2px solid var(--red)}
+.tlbl2{font-size:8px;letter-spacing:2px;margin-bottom:8px;font-weight:700}
+.tlbl2.cyan{color:var(--cyan)}
+.tlbl2.purple{color:var(--purple)}
+.tlbl2.green{color:var(--green)}
+.tlbl2.yellow{color:var(--yellow)}
+.tlbl2.red{color:var(--red)}
+.theory-txt{font-size:12px;color:var(--text);line-height:1.8}
+.theory-txt strong{color:var(--white)}
+.triggers{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.trigger{font-size:10px;padding:3px 10px;background:var(--cyandim);border:1px solid var(--border2);color:var(--cyan)}
+.mistake{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.mistake:last-child{border-bottom:none}
+.mnum{color:var(--red);font-size:11px;font-weight:700;flex-shrink:0}
+.mtxt{font-size:11px;color:var(--text);line-height:1.6}
+.mfix{font-size:10px;color:var(--green);margin-top:3px}
+.code-box{background:#0a0c0e;border:1px solid var(--border);padding:13px;overflow-x:auto;margin-top:8px}
+.code-lbl{font-size:8px;color:var(--text2);letter-spacing:2px;margin-bottom:8px}
+pre{font-size:11px;color:#abb2bf;line-height:1.7;white-space:pre}
+.kw{color:#c678dd}.fn{color:#61afef}.cm{color:#5c6370;font-style:italic}.st{color:#98c379}.nm{color:#d19a66}
+.tlbl{font-size:8px;color:var(--text2);letter-spacing:2px;margin:12px 0 6px}
+.titem{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:1px solid var(--border);margin-bottom:3px;background:var(--bg2);cursor:pointer;transition:all .15s}
+.titem:hover{border-color:rgba(0,229,255,.15)}
+.titem.done{opacity:.4}
+.titem.done .ttxt{text-decoration:line-through;color:var(--text2)}
+.tcb{width:12px;height:12px;border:1px solid var(--border);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:8px}
+.titem.done .tcb{background:var(--cyan);border-color:var(--cyan);color:#000}
+.ttxt{font-size:11px;line-height:1.5;flex:1}
+.ttype{font-size:7px;padding:2px 5px;flex-shrink:0;margin-top:1px;letter-spacing:1px}
+.ttype.solve{background:var(--greendim);color:var(--green);border:1px solid rgba(57,255,138,.2)}
+.ttype.code{background:var(--cyandim);color:var(--cyan);border:1px solid rgba(0,229,255,.2)}
+.ttype.read{background:var(--yellowdim);color:var(--yellow);border:1px solid rgba(255,217,61,.2)}
+.problems-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:5px;margin-top:5px}
+.prob-item{padding:7px 9px;background:var(--bg2);border:1px solid var(--border);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:7px}
+.prob-item:hover{border-color:rgba(0,229,255,.15)}
+.prob-item.done{opacity:.4;border-color:rgba(57,255,138,.2)}
+.prob-item.done .prob-name{text-decoration:line-through;color:var(--text2)}
+.prob-cb{width:11px;height:11px;border:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:7px}
+.prob-item.done .prob-cb{background:var(--green);border-color:var(--green);color:#000}
+.prob-name{font-size:10px;flex:1;line-height:1.4}
+.prob-diff{font-size:7px;padding:1px 4px;letter-spacing:1px;flex-shrink:0}
+.prob-diff.E{background:var(--greendim);color:var(--green);border:1px solid rgba(57,255,138,.2)}
+.prob-diff.M{background:rgba(255,107,53,.1);color:var(--orange);border:1px solid rgba(255,107,53,.2)}
+.prob-diff.H{background:rgba(255,56,96,.1);color:var(--red);border:1px solid rgba(255,56,96,.2)}
+.comp{margin:14px 0;padding:13px;background:var(--bg2);border:1px solid var(--border2)}
+.complbl{font-size:8px;color:var(--cyan);letter-spacing:2px;margin-bottom:8px}
+.citem{display:flex;align-items:flex-start;gap:8px;font-size:11px;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer;line-height:1.5}
+.citem:last-child{border-bottom:none}
+.cdot{width:5px;height:5px;border:1px solid var(--text2);flex-shrink:0;margin-top:4px}
+.citem.done .cdot{background:var(--cyan);border-color:var(--cyan)}
+.citem.done span{text-decoration:line-through;color:var(--text2)}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--border2);padding:10px 15px;font-size:10px;color:var(--cyan);transform:translateY(60px);opacity:0;transition:all .4s;z-index:999;max-width:240px;font-family:'JetBrains Mono',monospace}
+.toast.show{transform:translateY(0);opacity:1}
+.ttitle{font-size:12px;margin-bottom:2px;font-weight:700}
+.tsub{color:var(--text2);font-size:9px}
+footer{text-align:center;padding:28px 0;font-size:9px;color:var(--text2);border-top:1px solid var(--border);margin-top:44px;letter-spacing:2px}
+@media(max-width:600px){.plrhdr{flex-direction:column}.plrxp{margin-left:0}.problems-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="hdr">
+  <div class="logo">DSA<span>.exe</span></div>
+  <div class="xpwrap">
+    <div class="xpmeta"><span class="lv" id="lvlbl">RANK 0 — ARRAY WALKER</span><span id="xplbl">0 / 500 XP</span></div>
+    <div class="xptrack"><div class="xpfill" id="xpfill" style="width:0%"></div></div>
+  </div>
+  <div class="hdrstats">
+    <div class="hstat"><span class="hval" id="totxp">0</span><span class="hlbl">TOTAL XP</span></div>
+    <div class="hstat"><span class="hval" id="probdone">0</span><span class="hlbl">SOLVED</span></div>
+    <div class="hstat"><span class="hval" id="patdone">0</span><span class="hlbl">PATTERNS</span></div>
+  </div>
+  <span class="syncst" id="syncst">● OFFLINE</span>
+  <button class="resetbtn" id="resetBtn">RESET</button>
+</div></div></header>
+
+<main class="wrap">
+  <div class="hero">
+    <div class="herotag">Complete Self-Contained Learning Guide</div>
+    <h1><em>Pattern</em> Based<br><span>DSA</span> Mastery</h1>
+    <p>Everything is inside this file. No internet required to learn. Theory, worked examples, pattern triggers, common mistakes, and every problem — all in one place. Firebase syncs your progress across all devices.</p>
+  </div>
+  <div class="lvlwrap">
+    <div class="lvlpill" id="r0">ARRAY WALKER</div><div class="lvlpill" id="r1">POINTER HANDLER</div>
+    <div class="lvlpill" id="r2">WINDOW MASTER</div><div class="lvlpill" id="r3">TREE CLIMBER</div>
+    <div class="lvlpill" id="r4">GRAPH EXPLORER</div><div class="lvlpill" id="r5">DP ARCHITECT</div>
+    <div class="lvlpill" id="r6">ALGORITHM MASTER</div>
+  </div>
+  <div class="achiev">
+    <div class="badge" id="b0"><span class="bicon">⚡</span><div><span class="bname">First Solve</span><span class="bdesc">Mark first problem done</span></div></div>
+    <div class="badge" id="b1"><span class="bicon">🎯</span><div><span class="bname">Pattern Hunter</span><span class="bdesc">Master 3 patterns</span></div></div>
+    <div class="badge" id="b2"><span class="bicon">🌳</span><div><span class="bname">Tree Whisperer</span><span class="bdesc">Complete Trees</span></div></div>
+    <div class="badge" id="b3"><span class="bicon">💎</span><div><span class="bname">DP Survivor</span><span class="bdesc">Complete Dynamic Prog</span></div></div>
+    <div class="badge" id="b4"><span class="bicon">🚀</span><div><span class="bname">Interview Ready</span><span class="bdesc">Reach Rank 5</span></div></div>
+    <div class="badge" id="b5"><span class="bicon">👑</span><div><span class="bname">Algorithm Master</span><span class="bdesc">Complete all patterns</span></div></div>
+  </div>
+  <div class="pnav" id="pnav">
+    <button class="pbtn active" data-pattern="p0">📦<br>ARRAYS &amp;<br>HASHING</button>
+    <button class="pbtn" data-pattern="p1">👉<br>TWO<br>POINTERS</button>
+    <button class="pbtn" data-pattern="p2">🪟<br>SLIDING<br>WINDOW</button>
+    <button class="pbtn" data-pattern="p3">📚<br>STACK</button>
+    <button class="pbtn" data-pattern="p4">🔍<br>BINARY<br>SEARCH</button>
+    <button class="pbtn" data-pattern="p5">🔗<br>LINKED<br>LISTS</button>
+    <button class="pbtn" data-pattern="p6">🌳<br>TREES</button>
+    <button class="pbtn" data-pattern="p7">🕸<br>GRAPHS</button>
+    <button class="pbtn" data-pattern="p8">⛰<br>HEAP</button>
+    <button class="pbtn" data-pattern="p9">🔙<br>BACK-<br>TRACKING</button>
+    <button class="pbtn" data-pattern="p10">💎<br>DYNAMIC<br>PROG</button>
+    <button class="pbtn" data-pattern="p11">🔢<br>INTERVALS<br>&amp; GREEDY</button>
+    <button class="pbtn" data-pattern="p12">🔡<br>TRIES</button>
+    <button class="pbtn" data-pattern="p13">🧮<br>BIT<br>MANIP</button>
+    <button class="pbtn" data-pattern="p14">🐢<br>FAST &amp;<br>SLOW</button>
+    <button class="pbtn" data-pattern="p15">📈<br>KADANE'S</button>
+    <button class="pbtn" data-pattern="p16">🏗<br>SYSTEM<br>DESIGN</button>
+  </div>
+  <div id="p0" class="pattern active"></div>
+  <div id="p1" class="pattern"></div>
+  <div id="p2" class="pattern"></div>
+  <div id="p3" class="pattern"></div>
+  <div id="p4" class="pattern"></div>
+  <div id="p5" class="pattern"></div>
+  <div id="p6" class="pattern"></div>
+  <div id="p7" class="pattern"></div>
+  <div id="p8" class="pattern"></div>
+  <div id="p9" class="pattern"></div>
+  <div id="p10" class="pattern"></div>
+  <div id="p11" class="pattern"></div>
+  <div id="p12" class="pattern"></div>
+  <div id="p13" class="pattern"></div>
+  <div id="p14" class="pattern"></div>
+  <div id="p15" class="pattern"></div>
+  <div id="p16" class="pattern"></div>
+</main>
+<div class="toast" id="toast"><div class="ttitle" id="ttitle">+XP</div><div class="tsub" id="tsub">Pattern recognized.</div></div>
+<footer><div class="wrap">DSA.EXE — EVERYTHING YOU NEED. NO INTERNET REQUIRED TO LEARN.</div></footer>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const FC={apiKey:"AIzaSyC6GEvz3VK2RKpC3EXqXxRPSrk-G6e5sZw",authDomain:"roadmap-sync-5fc1f.firebaseapp.com",projectId:"roadmap-sync-5fc1f",storageBucket:"roadmap-sync-5fc1f.firebasestorage.app",messagingSenderId:"834903662109",appId:"1:834903662109:web:1b1cc3cc8ae8c852a1b0f4"};
+const _app=initializeApp(FC);const _db=getFirestore(_app);const DOC=doc(_db,"progress","dsa_v3");
+let saveTimer=null;
+function setSS(s){const e=document.getElementById('syncst');if(!e)return;e.textContent=s==='syncing'?'⟳ SYNCING':s==='saved'?'✓ SYNCED':'✗ OFFLINE';e.style.color=s==='saved'?'var(--cyan)':s==='error'?'var(--red)':'var(--text2)';}
+async function loadFB(){try{setSS('syncing');const snap=await getDoc(DOC);const d=snap.exists()?snap.data():{t:{},p:{},c:{}};if(!d.t)d.t={};if(!d.p)d.p={};if(!d.c)d.c={};setSS('saved');return d;}catch(e){setSS('error');return{t:{},p:{},c:{}};}}
+async function saveFB(){try{setSS('syncing');await setDoc(DOC,{t:S.t,p:S.p,c:S.c});setSS('saved');}catch(e){setSS('error');}}
+function save(){clearTimeout(saveTimer);saveTimer=setTimeout(saveFB,800);}
+const D={
+p0:{icon:"📦",title:"Arrays & Hashing",sub:"Foundation of DSA. Master this first — everything else builds on it.",xp:400,
+theory:"Arrays store elements one after another in memory. Accessing any element by position is instant — O(1) access. The tradeoff is inserting or deleting in the middle is slow because you shift everything.\n\n<strong>Hashing</strong> gives O(1) lookup. A HashMap stores key-value pairs. When you put a number in, a hash function converts it to a memory position. Lookup uses the same function — instant.\n\n<strong>Why they work together:</strong> Most frequency or duplicate problems need fast checking. Without hashing you loop every time — O(n²). With HashMap you check in O(1) — making the whole solution O(n).",
+triggers:["find duplicate","count frequency","how many times","group by","seen before","two numbers that sum","contains","most frequent","anagram","O(n) solution"],
+example:{problem:"Two Sum — return indices of two numbers that add up to target.",thinking:"Step 1: Two numbers summing to target → HashMap.\nStep 2: For each number, the complement needed is target - current_number.\nStep 3: If complement seen before → found the pair.\nStep 4: If not → store current number with its index.",code:`<span class="kw">def</span> <span class="fn">two_sum</span>(nums, target):
+    seen = {}  <span class="cm"># number → index</span>
+    <span class="kw">for</span> i, num <span class="kw">in</span> <span class="fn">enumerate</span>(nums):
+        complement = target - num
+        <span class="kw">if</span> complement <span class="kw">in</span> seen:
+            <span class="kw">return</span> [seen[complement], i]
+        seen[num] = i  <span class="cm"># store for later</span>
+    <span class="cm"># Time: O(n). Space: O(n)</span>`},
+mistakes:[{n:"1",t:"Using nested loop — O(n²)",f:"Fix: HashMap gives O(1) lookup. One pass is enough."},{n:"2",t:"Checking complement AFTER storing current number",f:"Fix: Check first, then store. Otherwise you match a number with itself."},{n:"3",t:"Confusing Set vs Map",f:"Fix: Set = 'have I seen this?' Map = 'where/how many times did I see this?'"}],
+tasks:[{type:"solve",text:"Two Sum — solve it, then try in one pass"},{type:"solve",text:"Contains Duplicate — can you do it without sorting?"},{type:"solve",text:"Valid Anagram — try both sorting approach and HashMap"},{type:"solve",text:"Group Anagrams — sorted word is the HashMap key"},{type:"solve",text:"Top K Frequent Elements — HashMap then sort by frequency"},{type:"code",text:"From scratch: frequency counter returning top 3 most frequent elements"}],
+problems:[{n:"Two Sum",d:"E",id:"p0a"},{n:"Contains Duplicate",d:"E",id:"p0b"},{n:"Valid Anagram",d:"E",id:"p0c"},{n:"Group Anagrams",d:"M",id:"p0d"},{n:"Top K Frequent Elements",d:"M",id:"p0e"},{n:"Product Array Except Self",d:"M",id:"p0f"},{n:"Longest Consecutive Sequence",d:"M",id:"p0g"},{n:"Maximum Subarray",d:"E",id:"p0h"},{n:"Merge Sorted Array",d:"E",id:"p0i"},{n:"Sort Colors",d:"M",id:"p0j"},{n:"Longest Common Prefix",d:"E",id:"p0k"},{n:"Roman to Integer",d:"E",id:"p0l"},{n:"Valid Sudoku",d:"M",id:"p0m"},{n:"Happy Number",d:"E",id:"p0n"},{n:"Ransom Note",d:"E",id:"p0o"},{n:"First Unique Character",d:"E",id:"p0p"},{n:"Top K Frequent Words",d:"M",id:"p0q"}],
+comp:["I solve Two Sum without notes","I know when to use Set vs Map","I explain O(n) vs O(n²) for duplicate problems","I solved Group Anagrams independently"]},
+
+p1:{icon:"👉",title:"Two Pointers",sub:"Turn O(n²) into O(n) on sorted arrays by moving two pointers intelligently.",xp:300,
+theory:"Put one pointer at the start, one at the end. Check their sum. If too small, move left pointer right. If too big, move right pointer left. If equal, done.\n\n<strong>This works because the array is sorted</strong> — you make intelligent decisions about which direction to move. On unsorted arrays this does not work.\n\n<strong>Two setups:</strong>\n1. Opposite ends — pointers start at both ends and move toward each other. Good for pair sum problems.\n2. Same direction — both start at left, move right at different speeds. Good for removing duplicates, fast/slow pointer.",
+triggers:["sorted array","find pair","two numbers","three numbers","palindrome","reverse","remove duplicates from sorted","closest to target","partition","O(1) space"],
+example:{problem:"3Sum — find all unique triplets that sum to zero.",thinking:"Step 1: 3 numbers summing to zero → sort first, then two pointers.\nStep 2: Fix one number with outer loop. Two pointers for the remaining two.\nStep 3: For nums[i], need two numbers summing to -nums[i].\nStep 4: left=i+1, right=end. Sum too small → left++. Too big → right--.\nStep 5: Skip duplicate values to avoid duplicate triplets.",code:`<span class="kw">def</span> <span class="fn">three_sum</span>(nums):
+    nums.sort(); result = []
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(nums) - <span class="nm">2</span>):
+        <span class="kw">if</span> i > <span class="nm">0</span> <span class="kw">and</span> nums[i] == nums[i-<span class="nm">1</span>]: <span class="kw">continue</span>
+        left, right = i+<span class="nm">1</span>, <span class="fn">len</span>(nums)-<span class="nm">1</span>
+        <span class="kw">while</span> left < right:
+            s = nums[i]+nums[left]+nums[right]
+            <span class="kw">if</span> s == <span class="nm">0</span>:
+                result.append([nums[i],nums[left],nums[right]])
+                <span class="kw">while</span> left<right <span class="kw">and</span> nums[left]==nums[left+<span class="nm">1</span>]: left+=<span class="nm">1</span>
+                <span class="kw">while</span> left<right <span class="kw">and</span> nums[right]==nums[right-<span class="nm">1</span>]: right-=<span class="nm">1</span>
+                left+=<span class="nm">1</span>; right-=<span class="nm">1</span>
+            <span class="kw">elif</span> s < <span class="nm">0</span>: left+=<span class="nm">1</span>
+            <span class="kw">else</span>: right-=<span class="nm">1</span>
+    <span class="kw">return</span> result`},
+mistakes:[{n:"1",t:"Forgetting to sort the array first",f:"Fix: Two pointers only works on sorted arrays. Sort is O(n log n) — still better than O(n²)."},{n:"2",t:"Not handling duplicate triplets",f:"Fix: After finding a valid triplet, skip all duplicate values before moving pointers."},{n:"3",t:"Using two pointers on unsorted array",f:"Fix: Use HashMap instead if array cannot be sorted."}],
+tasks:[{type:"solve",text:"Valid Palindrome — classic warm up"},{type:"solve",text:"Two Sum II — sorted array, perfect for two pointers"},{type:"solve",text:"Container With Most Water — move the shorter wall"},{type:"solve",text:"3Sum — sort first, fix one, two pointer for rest"},{type:"solve",text:"Trapping Rain Water — hardest two pointer"}],
+problems:[{n:"Valid Palindrome",d:"E",id:"p1a"},{n:"Two Sum II",d:"M",id:"p1b"},{n:"3Sum",d:"M",id:"p1c"},{n:"Container With Most Water",d:"M",id:"p1d"},{n:"Trapping Rain Water",d:"H",id:"p1e"},{n:"Boats to Save People",d:"M",id:"p1f"},{n:"Squares of Sorted Array",d:"E",id:"p1g"},{n:"Backspace String Compare",d:"M",id:"p1h"}],
+comp:["I solve two pointer problems on sorted arrays","I know when two pointers beats HashMap","I solved 3Sum with duplicate handling","I understand opposite vs same direction setup"]},
+
+p2:{icon:"🪟",title:"Sliding Window",sub:"Dynamic window expands and shrinks. O(n) for subarray and substring problems.",xp:300,
+theory:"A sliding window is a range [left, right] that moves through the array. Instead of recomputing from scratch, you add one element on the right and remove one on the left.\n\n<strong>Fixed window:</strong> Size is always k. Move right by 1, remove leftmost. Use when problem says 'subarray of size k'.\n\n<strong>Variable window:</strong> Expands when condition satisfied, shrinks when it breaks. Use when problem says 'longest/shortest subarray satisfying X'.\n\n<strong>Key insight:</strong> Every element enters once and leaves once. That is why it is O(n) — each element processed at most twice.",
+triggers:["subarray","substring","window","consecutive","longest with constraint","shortest with constraint","exactly k distinct","at most k","contains all characters","permutation of"],
+example:{problem:"Longest Substring Without Repeating Characters.",thinking:"Step 1: Longest substring with no repeating chars → variable sliding window.\nStep 2: Expand right to include new chars. If duplicate appears, shrink from left.\nStep 3: Use HashMap to store last seen position of each char.\nStep 4: When duplicate found, jump left to max(left, last_seen[char] + 1).\nStep 5: Answer is max(right - left + 1) throughout.",code:`<span class="kw">def</span> <span class="fn">length_of_longest_substring</span>(s):
+    seen = {}; left = <span class="nm">0</span>; best = <span class="nm">0</span>
+    <span class="kw">for</span> right <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(s)):
+        <span class="kw">if</span> s[right] <span class="kw">in</span> seen <span class="kw">and</span> seen[s[right]] >= left:
+            left = seen[s[right]] + <span class="nm">1</span>  <span class="cm"># shrink</span>
+        seen[s[right]] = right
+        best = <span class="fn">max</span>(best, right - left + <span class="nm">1</span>)
+    <span class="kw">return</span> best`},
+mistakes:[{n:"1",t:"Shrinking left past where it should be",f:"Fix: left = max(left, last_seen[char] + 1) — never move left backwards."},{n:"2",t:"Using fixed window logic for variable window",f:"Fix: Fixed = always remove left when adding right. Variable = only shrink when constraint breaks."},{n:"3",t:"Not updating answer at every step",f:"Fix: Track best = max(best, window_size) at every step, not just when window is valid."}],
+tasks:[{type:"solve",text:"Best Time to Buy Sell Stock — simplest sliding window"},{type:"solve",text:"Longest Substring Without Repeating Characters"},{type:"solve",text:"Longest Repeating Character Replacement"},{type:"solve",text:"Permutation in String — fixed window with frequency match"},{type:"solve",text:"Minimum Window Substring — hardest, needs two HashMaps"}],
+problems:[{n:"Best Time Buy Sell Stock",d:"E",id:"p2a"},{n:"Longest Substring No Repeat",d:"M",id:"p2b"},{n:"Longest Repeating Char Replace",d:"M",id:"p2c"},{n:"Permutation in String",d:"M",id:"p2d"},{n:"Minimum Window Substring",d:"H",id:"p2e"},{n:"Sliding Window Maximum",d:"H",id:"p2f"},{n:"Find All Anagrams",d:"M",id:"p2g"},{n:"Max Consecutive Ones III",d:"M",id:"p2h"},{n:"Fruits Into Baskets",d:"M",id:"p2i"}],
+comp:["I know fixed vs variable window","I implement variable window without notes","I solved Minimum Window Substring","I explain why sliding window is O(n)"]},
+
+p3:{icon:"📚",title:"Stack",sub:"LIFO. Bracket matching, expression evaluation, monotonic stack for next greater.",xp:250,
+theory:"A Stack is Last In First Out. Think of plates — you add and remove from the top. In Python use a list: append() to push, pop() to remove from top.\n\n<strong>Monotonic Stack</strong> maintains the stack in increasing or decreasing order by popping elements that violate the order before pushing. This solves next greater element in O(n) instead of O(n²).\n\n<strong>When to use Stack:</strong> anything where you process something and need to come back to the most recent thing. Brackets, nested structures, undo operations.\n\n<strong>Monotonic decreasing:</strong> pop when you find something bigger → solves next greater element.\n<strong>Monotonic increasing:</strong> pop when you find something smaller → solves next smaller element.",
+triggers:["valid parentheses","matching brackets","undo","next greater","previous smaller","evaluate expression","daily temperatures","monotonic","nested","histogram"],
+example:{problem:"Daily Temperatures — for each day, how many days until a warmer temperature.",thinking:"Step 1: Next greater element for each position → monotonic stack.\nStep 2: Stack stores indices of temperatures without an answer yet.\nStep 3: For each day, while current temp > temp at stack top index → pop it, calculate difference.\nStep 4: Answer for popped index = current_index - popped_index.\nStep 5: Push current index onto stack.",code:`<span class="kw">def</span> <span class="fn">daily_temperatures</span>(temps):
+    result = [<span class="nm">0</span>] * <span class="fn">len</span>(temps)
+    stack = []  <span class="cm"># stores indices</span>
+    <span class="kw">for</span> i, temp <span class="kw">in</span> <span class="fn">enumerate</span>(temps):
+        <span class="kw">while</span> stack <span class="kw">and</span> temp > temps[stack[-<span class="nm">1</span>]]:
+            idx = stack.pop()
+            result[idx] = i - idx
+        stack.append(i)
+    <span class="kw">return</span> result
+    <span class="cm"># Time: O(n) — each index pushed/popped once</span>`},
+mistakes:[{n:"1",t:"Storing values instead of indices",f:"Fix: Store indices. You need position to calculate distances and update result array."},{n:"2",t:"Forgetting elements left in stack at end",f:"Fix: Remaining elements have no warmer day — their answer stays 0. No action needed."},{n:"3",t:"Confusing monotonic increasing vs decreasing",f:"Fix: Next greater → monotonic decreasing stack. Next smaller → monotonic increasing stack."}],
+tasks:[{type:"solve",text:"Valid Parentheses — must know cold"},{type:"solve",text:"Min Stack — track minimum using two stacks"},{type:"solve",text:"Daily Temperatures — first monotonic stack problem"},{type:"solve",text:"Largest Rectangle in Histogram — hardest stack problem"},{type:"code",text:"Implement Stack class from scratch: push, pop, peek, isEmpty"}],
+problems:[{n:"Valid Parentheses",d:"E",id:"p3a"},{n:"Min Stack",d:"M",id:"p3b"},{n:"Evaluate RPN",d:"M",id:"p3c"},{n:"Generate Parentheses",d:"M",id:"p3d"},{n:"Daily Temperatures",d:"M",id:"p3e"},{n:"Car Fleet",d:"M",id:"p3f"},{n:"Largest Rectangle Histogram",d:"H",id:"p3g"},{n:"Next Greater Element I",d:"E",id:"p3h"},{n:"Longest Valid Parentheses",d:"H",id:"p3i"},{n:"Maximal Rectangle",d:"H",id:"p3j"},{n:"Validate Stack Sequences",d:"M",id:"p3k"},{n:"Remove Adjacent Duplicates",d:"E",id:"p3l"}],
+comp:["I implement bracket matching without notes","I understand monotonic stack","I solved Daily Temperatures independently","I know Stack vs Queue difference"]},
+
+p4:{icon:"🔍",title:"Binary Search",sub:"Eliminate half the search space each step. O(log n). Works on sorted data and answer spaces.",xp:300,
+theory:"Binary search works on sorted data. Look at middle element. Is your answer in the left half or right half? Discard the other half. Repeat.\n\nAfter each step the search space halves. 1 million elements → 20 steps. That is O(log n).\n\n<strong>Classic binary search:</strong> Find a specific value in a sorted array.\n\n<strong>Binary search on answer space:</strong> Instead of searching an array, search for the minimum or maximum value satisfying a condition. The condition must be monotonic — false false false TRUE TRUE TRUE. You find the boundary.\n\n<strong>The rule:</strong> Use left <= right for exact value search. Use left < right for boundary search. Getting this wrong causes infinite loops.",
+triggers:["sorted array","find target","O(log n)","minimum speed","minimum days","capacity","feasible","at least","can we achieve","koko","ship packages","rotated sorted"],
+example:{problem:"Koko Eating Bananas — find minimum eating speed to finish all bananas in h hours.",thinking:"Step 1: Find minimum speed → binary search on answer space.\nStep 2: Search range: speed from 1 to max(piles).\nStep 3: Condition: can Koko finish all piles in h hours at speed k?\nStep 4: For speed k, hours = sum(ceil(pile/k) for each pile).\nStep 5: Monotonic — if feasible at speed 5, feasible at speed 6. Find leftmost true.",code:`<span class="kw">import</span> math
+<span class="kw">def</span> <span class="fn">min_eating_speed</span>(piles, h):
+    left, right = <span class="nm">1</span>, <span class="fn">max</span>(piles)
+    <span class="kw">while</span> left < right:  <span class="cm"># find left boundary</span>
+        mid = (left + right) // <span class="nm">2</span>
+        hours = <span class="fn">sum</span>(math.ceil(p/mid) <span class="kw">for</span> p <span class="kw">in</span> piles)
+        <span class="kw">if</span> hours <= h:
+            right = mid   <span class="cm"># feasible, try smaller</span>
+        <span class="kw">else</span>:
+            left = mid+<span class="nm">1</span>  <span class="cm"># too slow, need faster</span>
+    <span class="kw">return</span> left`},
+mistakes:[{n:"1",t:"Using left <= right for boundary search — causes infinite loop",f:"Fix: left < right for boundary. left <= right only for exact value search."},{n:"2",t:"Float division for mid",f:"Fix: mid = left + (right - left) // 2 — integer division, prevents overflow."},{n:"3",t:"Not recognizing binary search on answer space",f:"Fix: Ask — is there a range of possible answers where validity is monotonic? If yes, binary search it."}],
+tasks:[{type:"solve",text:"Binary Search — implement it perfectly, get boundaries right"},{type:"solve",text:"Search in Rotated Sorted Array — classic tricky variant"},{type:"solve",text:"Koko Eating Bananas — binary search on answer space"},{type:"solve",text:"Find Min in Rotated Sorted Array"},{type:"solve",text:"Median of Two Sorted Arrays — hardest binary search"}],
+problems:[{n:"Binary Search",d:"E",id:"p4a"},{n:"Search Insert Position",d:"E",id:"p4b"},{n:"Find First Last Position",d:"M",id:"p4c"},{n:"Search Rotated Array",d:"M",id:"p4d"},{n:"Find Min Rotated Array",d:"M",id:"p4e"},{n:"Koko Eating Bananas",d:"M",id:"p4f"},{n:"Search 2D Matrix",d:"M",id:"p4g"},{n:"Time Based Key Value",d:"M",id:"p4h"},{n:"Median Two Sorted Arrays",d:"H",id:"p4i"},{n:"Find Peak Element",d:"M",id:"p4j"}],
+comp:["I implement binary search without off-by-one bugs","I identify binary search on answer space","I solved Koko Eating Bananas","I know left<=right vs left<right"]},
+
+p5:{icon:"🔗",title:"Linked Lists",sub:"Pointer manipulation. Always draw before coding. Dummy nodes eliminate edge cases.",xp:300,
+theory:"A linked list is a chain of nodes. Each node has a value and a pointer to the next node. No random access — you must follow pointers.\n\n<strong>Reversal dance:</strong> Three variables — prev (starts at None), curr (starts at head), nxt (saves next before overwriting). At each step: save nxt, flip curr.next to prev, advance prev and curr.\n\n<strong>Dummy node trick:</strong> Create a dummy node at the start. Gives a stable starting point. You never special-case an empty list. Return dummy.next at the end.\n\n<strong>Fast/Slow pointers:</strong> Fast moves 2 steps, slow moves 1. When fast reaches end, slow is at middle. If they meet before fast reaches end, there is a cycle.\n\n<strong>Golden rule:</strong> Draw your linked list with boxes and arrows before writing code.",
+triggers:["linked list","reverse","cycle","middle of list","nth from end","merge sorted lists","palindrome list","reorder","k groups","rotate list"],
+example:{problem:"Reverse a Linked List.",thinking:"Step 1: Need to reverse pointers — each node points forward, I need it pointing backward.\nStep 2: Three variables: prev (what current should point to), curr (processing), nxt (save before overwrite).\nStep 3: Save nxt → flip curr.next to prev → advance prev to curr → advance curr to nxt.\nStep 4: When curr is None, prev is the new head.",code:`<span class="kw">def</span> <span class="fn">reverse_list</span>(head):
+    prev, curr = <span class="kw">None</span>, head
+    <span class="kw">while</span> curr:
+        nxt = curr.next    <span class="cm"># 1. save next</span>
+        curr.next = prev   <span class="cm"># 2. flip pointer</span>
+        prev = curr        <span class="cm"># 3. advance prev</span>
+        curr = nxt         <span class="cm"># 4. advance curr</span>
+    <span class="kw">return</span> prev  <span class="cm"># prev is new head</span>`},
+mistakes:[{n:"1",t:"Not saving nxt before overwriting curr.next",f:"Fix: Always nxt = curr.next FIRST. Flip the pointer first and you lose the rest of the list forever."},{n:"2",t:"Not using dummy node for merge/build operations",f:"Fix: dummy = ListNode(0); tail = dummy. Attach nodes to tail, return dummy.next at end."},{n:"3",t:"Forgetting edge cases — empty list or single node",f:"Fix: Check if not head or not head.next at start for problems where these matter."}],
+tasks:[{type:"solve",text:"Reverse Linked List — know this cold, base of everything"},{type:"solve",text:"Linked List Cycle — fast/slow pointer"},{type:"solve",text:"Merge Two Sorted Lists — use dummy node"},{type:"solve",text:"Remove Nth Node From End — fast/slow with gap"},{type:"solve",text:"Reorder List — combine reverse and merge"},{type:"code",text:"Implement LinkedList from scratch: append, prepend, delete, reverse"}],
+problems:[{n:"Reverse Linked List",d:"E",id:"p5a"},{n:"Merge Two Sorted Lists",d:"E",id:"p5b"},{n:"Linked List Cycle",d:"E",id:"p5c"},{n:"Reorder List",d:"M",id:"p5d"},{n:"Remove Nth From End",d:"M",id:"p5e"},{n:"Copy List Random Ptr",d:"M",id:"p5f"},{n:"Find Duplicate Number",d:"M",id:"p5g"},{n:"Merge K Sorted Lists",d:"H",id:"p5h"},{n:"Reverse Nodes K-Group",d:"H",id:"p5i"},{n:"Remove List Elements",d:"E",id:"p5j"},{n:"Add Two Numbers",d:"M",id:"p5k"},{n:"Palindrome Linked List",d:"E",id:"p5l"},{n:"Sort List",d:"M",id:"p5m"}],
+comp:["I reverse a linked list without notes","I use dummy nodes automatically","I understand fast/slow pointer","I solved Merge K Sorted Lists"]},
+
+p6:{icon:"🌳",title:"Trees",sub:"Every tree problem = base case + recurse left + recurse right. One template rules all.",xp:400,
+theory:"A tree is a recursive data structure. Every subtree is also a valid tree — so recursion is the natural tool.\n\n<strong>Universal tree template:</strong>\n1. Base case: if not root, return something (0, None, False)\n2. Recurse left: left = solve(root.left)\n3. Recurse right: right = solve(root.right)\n4. Combine: return something using root.val, left, right\n\n<strong>DFS traversals:</strong>\n- Inorder (left → root → right): gives sorted order for BST\n- Preorder (root → left → right): good for copying\n- Postorder (left → right → root): good for deletion, height\n\n<strong>BFS Level Order:</strong> Use a queue. Process level by level. Good when you need level information.\n\n<strong>BST property:</strong> Left subtree values < root < right subtree values. Use this to prune.",
+triggers:["binary tree","BST","depth","height","path","LCA","level order","mirror","symmetric","serialize","diameter","balanced"],
+example:{problem:"Maximum Depth of Binary Tree.",thinking:"Step 1: Need the depth → tree problem, use recursion.\nStep 2: Base case: empty tree has depth 0.\nStep 3: Max depth = 1 + max(depth of left, depth of right).\nStep 4: That is literally the whole solution. Recursion handles the rest.",code:`<span class="kw">def</span> <span class="fn">max_depth</span>(root):
+    <span class="kw">if not</span> root:
+        <span class="kw">return</span> <span class="nm">0</span>  <span class="cm"># base case</span>
+    left = <span class="fn">max_depth</span>(root.left)
+    right = <span class="fn">max_depth</span>(root.right)
+    <span class="kw">return</span> <span class="nm">1</span> + <span class="fn">max</span>(left, right)
+    <span class="cm"># Time: O(n) — visit every node once</span>`},
+mistakes:[{n:"1",t:"Forgetting base case — causes infinite recursion or crashes",f:"Fix: Always start with if not root: return [base_value]. This is the foundation."},{n:"2",t:"Comparing children directly to validate BST",f:"Fix: Pass min/max bounds down the recursion. A node must be within the range set by all its ancestors."},{n:"3",t:"Using DFS when BFS is needed",f:"Fix: Need level-by-level info → BFS with queue. Need path/depth/ancestor info → DFS."}],
+tasks:[{type:"solve",text:"Max Depth — tree hello world"},{type:"solve",text:"Invert Binary Tree — simple recursion warm up"},{type:"solve",text:"Same Tree — recurse two trees simultaneously"},{type:"solve",text:"Level Order Traversal — BFS with queue"},{type:"solve",text:"Validate BST — use min/max bounds, not just child comparison"},{type:"solve",text:"Lowest Common Ancestor — think carefully before coding"},{type:"code",text:"Implement BST from scratch: insert, search, delete, inorder"}],
+problems:[{n:"Max Depth Binary Tree",d:"E",id:"p6a"},{n:"Same Tree",d:"E",id:"p6b"},{n:"Invert Binary Tree",d:"E",id:"p6c"},{n:"Balanced Binary Tree",d:"E",id:"p6d"},{n:"Diameter of Binary Tree",d:"E",id:"p6e"},{n:"Subtree of Another Tree",d:"E",id:"p6f"},{n:"Symmetric Tree",d:"E",id:"p6g"},{n:"Level Order Traversal",d:"M",id:"p6h"},{n:"Right Side View",d:"M",id:"p6i"},{n:"Count Good Nodes",d:"M",id:"p6j"},{n:"Validate BST",d:"M",id:"p6k"},{n:"LCA of BST",d:"M",id:"p6l"},{n:"LCA of Binary Tree",d:"M",id:"p6m"},{n:"Kth Smallest in BST",d:"M",id:"p6n"},{n:"Construct Pre+Inorder",d:"M",id:"p6o"},{n:"Max Path Sum",d:"H",id:"p6p"},{n:"Inorder Traversal",d:"E",id:"p6q"},{n:"Preorder Traversal",d:"E",id:"p6r"},{n:"Count Complete Tree Nodes",d:"M",id:"p6s"}],
+comp:["I use base-recurse-combine template automatically","I know all 3 DFS traversals and BFS","I solved Max Path Sum without hints","I explain when to use BFS vs DFS"]},
+
+p7:{icon:"🕸",title:"Graphs",sub:"BFS finds shortest path. DFS explores everything. Always track visited.",xp:400,
+theory:"A graph is nodes connected by edges. Unlike trees, graphs can have cycles and any number of connections.\n\n<strong>Represent as adjacency list:</strong> A dictionary where each key is a node and value is a list of its neighbors.\n\n<strong>BFS:</strong> Uses a queue. Explores all neighbors at distance 1, then 2, etc. Guarantees shortest path in unweighted graphs.\n\n<strong>DFS:</strong> Uses recursion or stack. Goes deep before backtracking. Good for connectivity, cycle detection, topological sort.\n\n<strong>Visited set:</strong> Without it you loop forever in cyclic graphs. Mark a node visited BEFORE processing it.\n\n<strong>Topological Sort:</strong> For directed graphs with no cycles. Find order where every edge points forward. Used for course prerequisites.",
+triggers:["islands","connected components","path between","shortest path","cycle","course prerequisite","dependency","reachable","flood fill","clone graph","bipartite","provinces"],
+example:{problem:"Number of Islands — count islands in a grid.",thinking:"Step 1: Find connected components → DFS on graph.\nStep 2: Each cell is a node connected to 4 neighbors.\nStep 3: Loop through grid. When I find a 1, start DFS — marks one whole island.\nStep 4: DFS marks all connected 1s as visited by changing them to 0.\nStep 5: Count how many times I start a DFS — that is the number of islands.",code:`<span class="kw">def</span> <span class="fn">num_islands</span>(grid):
+    <span class="kw">def</span> <span class="fn">dfs</span>(r, c):
+        <span class="kw">if</span> r<<span class="nm">0</span> <span class="kw">or</span> c<<span class="nm">0</span> <span class="kw">or</span> r>=<span class="fn">len</span>(grid) \
+           <span class="kw">or</span> c>=<span class="fn">len</span>(grid[<span class="nm">0</span>]) <span class="kw">or</span> grid[r][c]!='1': <span class="kw">return</span>
+        grid[r][c]='0'
+        <span class="kw">for</span> dr,dc <span class="kw">in</span> [(<span class="nm">1</span>,<span class="nm">0</span>),(-<span class="nm">1</span>,<span class="nm">0</span>),(<span class="nm">0</span>,<span class="nm">1</span>),(<span class="nm">0</span>,-<span class="nm">1</span>)]:
+            <span class="fn">dfs</span>(r+dr, c+dc)
+    islands = <span class="nm">0</span>
+    <span class="kw">for</span> r <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(grid)):
+        <span class="kw">for</span> c <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(grid[<span class="nm">0</span>])):
+            <span class="kw">if</span> grid[r][c]=='1': <span class="fn">dfs</span>(r,c); islands+=<span class="nm">1</span>
+    <span class="kw">return</span> islands`},
+mistakes:[{n:"1",t:"Not marking visited before processing — infinite loop",f:"Fix: Mark visited when you add to queue or start DFS, not when you finish processing."},{n:"2",t:"Hardcoding 4 directions separately",f:"Fix: Use directions array [(1,0),(-1,0),(0,1),(0,-1)] and loop — cleaner and less error prone."},{n:"3",t:"Using BFS when DFS is needed or vice versa",f:"Fix: Shortest path → BFS. Explore all or detect cycle → DFS. Topological order → DFS with post-order."}],
+tasks:[{type:"solve",text:"Number of Islands — graph hello world"},{type:"solve",text:"Clone Graph — BFS with HashMap to avoid duplicates"},{type:"solve",text:"Course Schedule — cycle detection in directed graph"},{type:"solve",text:"Pacific Atlantic Water Flow — two BFS from opposite edges"},{type:"solve",text:"Course Schedule II — topological sort"},{type:"code",text:"Implement BFS and DFS from scratch on adjacency list"}],
+problems:[{n:"Number of Islands",d:"M",id:"p7a"},{n:"Max Area of Island",d:"M",id:"p7b"},{n:"Clone Graph",d:"M",id:"p7c"},{n:"Walls and Gates",d:"M",id:"p7d"},{n:"Rotting Oranges",d:"M",id:"p7e"},{n:"Pacific Atlantic Water Flow",d:"M",id:"p7f"},{n:"Course Schedule",d:"M",id:"p7g"},{n:"Course Schedule II",d:"M",id:"p7h"},{n:"Number of Connected Components",d:"M",id:"p7i"},{n:"Graph Valid Tree",d:"M",id:"p7j"},{n:"Word Ladder",d:"H",id:"p7k"},{n:"Number of Provinces",d:"M",id:"p7l"},{n:"Is Graph Bipartite",d:"M",id:"p7m"}],
+comp:["I implement BFS and DFS from scratch","I explain topological sort","I solved Course Schedule without hints","I know BFS vs DFS — when to use each"]},
+
+p8:{icon:"⛰",title:"Heap",sub:"Always get min or max in O(log n). Two heaps for median problems.",xp:250,
+theory:"A heap is a tree where the parent is always smaller than children (min-heap) or larger (max-heap). Min is always at top — O(1) access. Insert or remove takes O(log n).\n\n<strong>Python heapq:</strong> Always a min-heap. To get max-heap behavior, negate values when pushing and negate again when popping.\n\n<strong>Top-K pattern:</strong> Maintain a min-heap of size k. For each element: push it, then if size > k, pop the smallest. After all elements, heap contains the k largest.\n\n<strong>Two heaps for median:</strong> Max-heap for left half (smaller numbers), min-heap for right half (larger numbers). Keep sizes balanced. Median is at the top of one or both heaps.\n\n<strong>Heap beats sorting when:</strong> data streams in dynamically or you only need top-k, not full sorted order.",
+triggers:["k largest","k smallest","k closest","median","stream","top k","priority","schedule","reorganize","most frequent","minimum cost","merge k sorted"],
+example:{problem:"Kth Largest Element in an Array.",thinking:"Step 1: Kth largest → min-heap of size k.\nStep 2: Keep a heap with the k largest elements seen so far.\nStep 3: Push each element. If size > k, pop the minimum.\nStep 4: After all elements, heap[0] is the kth largest.",code:`<span class="kw">import</span> heapq
+<span class="kw">def</span> <span class="fn">find_kth_largest</span>(nums, k):
+    heap = []
+    <span class="kw">for</span> num <span class="kw">in</span> nums:
+        heapq.heappush(heap, num)
+        <span class="kw">if</span> <span class="fn">len</span>(heap) > k:
+            heapq.heappop(heap)  <span class="cm"># remove smallest</span>
+    <span class="kw">return</span> heap[<span class="nm">0</span>]  <span class="cm"># kth largest at top</span>
+    <span class="cm"># Time: O(n log k). Space: O(k)</span>`},
+mistakes:[{n:"1",t:"Using max-heap for kth largest — wrong intuition",f:"Fix: For kth LARGEST, use MIN-heap of size k. Smallest of the k largest is your answer."},{n:"2",t:"Forgetting to negate for max-heap in Python",f:"Fix: heapq.heappush(heap, -num) to push. Use -heap[0] to read the max."},{n:"3",t:"Using heap when simple sorting is fine",f:"Fix: If you process all elements then query once, just sort. Heap wins when data streams in."}],
+tasks:[{type:"solve",text:"Kth Largest Element in Array"},{type:"solve",text:"K Closest Points to Origin — heap with custom key"},{type:"solve",text:"Task Scheduler — greedy with heap"},{type:"solve",text:"Find Median from Data Stream — two heaps, hardest heap problem"},{type:"code",text:"Implement min-heap from scratch: push, pop, heapify"}],
+problems:[{n:"Kth Largest Element",d:"M",id:"p8a"},{n:"K Closest Points",d:"M",id:"p8b"},{n:"Top K Frequent Elements",d:"M",id:"p8c"},{n:"Last Stone Weight",d:"E",id:"p8d"},{n:"Task Scheduler",d:"M",id:"p8e"},{n:"Design Twitter",d:"M",id:"p8f"},{n:"Find Median from Stream",d:"H",id:"p8g"},{n:"Find K Pairs Smallest Sums",d:"M",id:"p8h"},{n:"Kth Smallest Sorted Matrix",d:"M",id:"p8i"},{n:"Reorganize String",d:"M",id:"p8j"}],
+comp:["I implement heap from scratch","I know min-heap max-heap trick in Python","I solved Find Median from Data Stream","I know when heap beats sorting"]},
+
+p9:{icon:"🔙",title:"Backtracking",sub:"Try all possibilities. Undo and try next. Draw the decision tree first.",xp:300,
+theory:"Backtracking is systematic trial and error. Build a solution step by step. At each step try every possible option. If you reach a dead end, undo the last step and try the next.\n\n<strong>The template — memorize this:</strong>\n1. If solution is complete → add to results, return\n2. For each possible choice:\n   a. Make the choice (add to path)\n   b. Recurse\n   c. Undo the choice (remove from path)\n\n<strong>Decision tree:</strong> Before coding, draw the tree. Each level is one decision. Each branch is one choice. Leaves are complete solutions or dead ends.\n\n<strong>Pruning:</strong> Cut branches early when they cannot lead to a valid solution. This makes backtracking much faster than brute force.\n\n<strong>Key insight:</strong> Backtracking generates ALL possible solutions. If a problem asks for all combinations, permutations, or subsets — it is backtracking.",
+triggers:["all combinations","all permutations","all subsets","generate all","word search","sudoku","N-queens","partition","path in grid","choose k from n","letter combinations"],
+example:{problem:"Subsets — return all possible subsets of an array.",thinking:"Step 1: Need ALL subsets → backtracking.\nStep 2: At each index, either include nums[i] or skip it.\nStep 3: At each call, add current path to results (every path is a valid subset).\nStep 4: Try including each element from start to end, recurse, then remove.",code:`<span class="kw">def</span> <span class="fn">subsets</span>(nums):
+    result = []
+    <span class="kw">def</span> <span class="fn">backtrack</span>(start, path):
+        result.append(path[:])  <span class="cm"># snapshot</span>
+        <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(start, <span class="fn">len</span>(nums)):
+            path.append(nums[i])    <span class="cm"># choose</span>
+            <span class="fn">backtrack</span>(i+<span class="nm">1</span>, path)  <span class="cm"># explore</span>
+            path.pop()              <span class="cm"># unchoose</span>
+    <span class="fn">backtrack</span>(<span class="nm">0</span>, [])
+    <span class="kw">return</span> result`},
+mistakes:[{n:"1",t:"Appending path directly instead of a copy",f:"Fix: result.append(path[:]) — path is modified later, you need a snapshot."},{n:"2",t:"Not using start index — causes duplicate combinations",f:"Fix: Pass start index to avoid reusing earlier elements. Prevents [1,2] and [2,1] both appearing."},{n:"3",t:"Forgetting to undo the choice after recursion",f:"Fix: path.pop() must always follow the recursive call. This IS the backtracking step."}],
+tasks:[{type:"solve",text:"Subsets — learn the template here"},{type:"solve",text:"Combination Sum — elements can be reused"},{type:"solve",text:"Permutations — different from combinations, no start index"},{type:"solve",text:"Word Search — backtracking on a grid"},{type:"solve",text:"Palindrome Partitioning — backtracking with palindrome check"},{type:"solve",text:"N-Queens — hardest backtracking, column and diagonal constraints"}],
+problems:[{n:"Subsets",d:"M",id:"p9a"},{n:"Combination Sum",d:"M",id:"p9b"},{n:"Combination Sum II",d:"M",id:"p9c"},{n:"Permutations",d:"M",id:"p9d"},{n:"Subsets II",d:"M",id:"p9e"},{n:"Word Search",d:"M",id:"p9f"},{n:"Palindrome Partitioning",d:"M",id:"p9g"},{n:"Letter Combinations Phone",d:"M",id:"p9h"},{n:"N-Queens",d:"H",id:"p9i"},{n:"Combinations",d:"M",id:"p9j"},{n:"Pow(x,n)",d:"M",id:"p9k"}],
+comp:["I know choose-explore-unchoose template","I draw decision tree before coding","I solved Combination Sum and Palindrome Partitioning","I copy path correctly with path[:]"]},
+
+p10:{icon:"💎",title:"Dynamic Programming",sub:"The hardest pattern. Define dp[i], write the recurrence, identify base cases, then code.",xp:500,
+theory:"DP solves problems by breaking them into overlapping subproblems and storing results so you do not recompute them.\n\n<strong>When to use DP:</strong> The problem has optimal substructure (optimal solution = optimal sub-solutions) AND overlapping subproblems (same subproblems appear multiple times).\n\n<strong>Two approaches:</strong>\n1. Top-down (memoization): Start with original problem, recurse, cache results in a dict.\n2. Bottom-up (tabulation): Start with base cases, fill a table, build up to the answer.\n\n<strong>The 4-step process — never skip step 1:</strong>\n1. Define dp[i] in plain English\n2. Write the recurrence relation\n3. Identify base cases\n4. Code it\n\n<strong>Common patterns:</strong> Fibonacci-like 1D DP, 0/1 Knapsack (include or exclude), LCS/LIS (2D DP for sequences).",
+triggers:["minimum maximum","number of ways","can you achieve","longest subsequence","how many paths","partition","knapsack","coin change","word break","edit distance","palindromic","distinct ways"],
+example:{problem:"Coin Change — minimum coins to make amount.",thinking:"Step 1: Minimum coins → optimization over choices → DP.\nStep 2: Define dp[i] = minimum coins needed to make amount i.\nStep 3: Recurrence: dp[i] = min(dp[i - coin] + 1) for each coin where coin <= i.\nStep 4: Base case: dp[0] = 0.\nStep 5: Fill dp[1] to dp[amount]. Return dp[amount] or -1 if unreachable.",code:`<span class="kw">def</span> <span class="fn">coin_change</span>(coins, amount):
+    dp = [<span class="fn">float</span>('inf')] * (amount+<span class="nm">1</span>)
+    dp[<span class="nm">0</span>] = <span class="nm">0</span>  <span class="cm"># base case</span>
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, amount+<span class="nm">1</span>):
+        <span class="kw">for</span> coin <span class="kw">in</span> coins:
+            <span class="kw">if</span> coin <= i:
+                dp[i] = <span class="fn">min</span>(dp[i], dp[i-coin]+<span class="nm">1</span>)
+    <span class="kw">return</span> dp[amount] <span class="kw">if</span> dp[amount] != <span class="fn">float</span>('inf') <span class="kw">else</span> -<span class="nm">1</span>
+    <span class="cm"># Time: O(amount * len(coins)). Space: O(amount)</span>`},
+mistakes:[{n:"1",t:"Jumping to code without defining dp[i] in English",f:"Fix: Always write dp[i] means... before anything else. Fuzzy definition equals wrong solution."},{n:"2",t:"Wrong initialization — using 0 instead of infinity for minimization",f:"Fix: For min problems, initialize with float('inf'). Only dp[0] = 0."},{n:"3",t:"Wrong iteration order in 2D DP",f:"Fix: Draw the table. Figure out which cells you need before computing each cell. Fill in that order."}],
+tasks:[{type:"solve",text:"Climbing Stairs — DP hello world, Fibonacci pattern"},{type:"solve",text:"House Robber — 1D DP classic"},{type:"solve",text:"Coin Change — bottom-up DP must know"},{type:"solve",text:"Longest Increasing Subsequence — define dp[i] carefully"},{type:"solve",text:"Longest Common Subsequence — 2D DP"},{type:"solve",text:"Word Break — DP with string manipulation"},{type:"solve",text:"Edit Distance — hardest 2D DP, understand 3 operations"}],
+problems:[{n:"Climbing Stairs",d:"E",id:"p10a"},{n:"Min Cost Climbing Stairs",d:"E",id:"p10b"},{n:"House Robber",d:"M",id:"p10c"},{n:"House Robber II",d:"M",id:"p10d"},{n:"Longest Palindromic Substring",d:"M",id:"p10e"},{n:"Palindromic Substrings",d:"M",id:"p10f"},{n:"Decode Ways",d:"M",id:"p10g"},{n:"Coin Change",d:"M",id:"p10h"},{n:"Max Product Subarray",d:"M",id:"p10i"},{n:"Word Break",d:"M",id:"p10j"},{n:"Longest Increasing Subsequence",d:"M",id:"p10k"},{n:"Unique Paths",d:"M",id:"p10l"},{n:"Longest Common Subsequence",d:"M",id:"p10m"},{n:"Buy Sell Stock Cooldown",d:"M",id:"p10n"},{n:"Edit Distance",d:"H",id:"p10o"},{n:"Burst Balloons",d:"H",id:"p10p"},{n:"Coin Change II",d:"M",id:"p10q"},{n:"Partition Equal Subset",d:"M",id:"p10r"}],
+comp:["I define dp[i] in English before coding","I implement both memoization and tabulation","I solved Coin Change and LCS","I explain the Coin Change recurrence clearly"]},
+
+p11:{icon:"🔢",title:"Intervals & Greedy",sub:"Sort by start time. Make locally optimal choices. No backtracking.",xp:250,
+theory:"<strong>Intervals:</strong> Sort by start time first — always. Then one pass handles merging, overlap detection, insertion. Two intervals [a,b] and [c,d] overlap when c <= b.\n\n<strong>Greedy algorithms</strong> make the locally optimal choice at each step hoping it leads to globally optimal. Unlike DP, you never reconsider a choice.\n\n<strong>Greedy works when:</strong> local optimal choice never hurts the global solution.\n\n<strong>Common greedy patterns:</strong>\n- Activity selection: pick activity ending earliest\n- Jump Game: track max reach at each position\n- Gas Station: if total gas >= total cost, solution exists",
+triggers:["merge intervals","meeting rooms","schedule","overlapping","insert interval","jump game","gas station","greedy","minimum arrows","non-overlapping","attend all meetings"],
+example:{problem:"Merge Intervals.",thinking:"Step 1: Overlapping intervals → sort by start, then merge.\nStep 2: Sort by start time.\nStep 3: Start with first interval. For each next interval, check overlap with last merged.\nStep 4: Overlap: next.start <= current.end. If overlap, merge by taking max of ends.\nStep 5: No overlap → add to result and move on.",code:`<span class="kw">def</span> <span class="fn">merge</span>(intervals):
+    intervals.sort(key=<span class="kw">lambda</span> x: x[<span class="nm">0</span>])
+    merged = [intervals[<span class="nm">0</span>]]
+    <span class="kw">for</span> start, end <span class="kw">in</span> intervals[<span class="nm">1</span>:]:
+        <span class="kw">if</span> start <= merged[-<span class="nm">1</span>][<span class="nm">1</span>]:
+            merged[-<span class="nm">1</span>][<span class="nm">1</span>] = <span class="fn">max</span>(merged[-<span class="nm">1</span>][<span class="nm">1</span>], end)
+        <span class="kw">else</span>:
+            merged.append([start, end])
+    <span class="kw">return</span> merged`},
+mistakes:[{n:"1",t:"Forgetting to sort intervals first",f:"Fix: Always sort by start time. Without sorting, mergeable intervals may be separated."},{n:"2",t:"Using end instead of max(end) when merging",f:"Fix: merged[-1][1] = max(merged[-1][1], end). New interval might be contained inside current."},{n:"3",t:"Applying greedy when DP is needed",f:"Fix: Test greedy with small examples. If a local choice can hurt you later, use DP instead."}],
+tasks:[{type:"solve",text:"Merge Intervals — sort and merge, must know"},{type:"solve",text:"Insert Interval — find position, merge neighbors"},{type:"solve",text:"Jump Game — greedy, track max reach"},{type:"solve",text:"Jump Game II — minimum jumps, greedy"},{type:"solve",text:"Gas Station — circular greedy"}],
+problems:[{n:"Merge Intervals",d:"M",id:"p11a"},{n:"Insert Interval",d:"M",id:"p11b"},{n:"Non-overlapping Intervals",d:"M",id:"p11c"},{n:"Meeting Rooms",d:"E",id:"p11d"},{n:"Meeting Rooms II",d:"M",id:"p11e"},{n:"Jump Game",d:"M",id:"p11f"},{n:"Jump Game II",d:"M",id:"p11g"},{n:"Gas Station",d:"M",id:"p11h"},{n:"Hand of Straights",d:"M",id:"p11i"}],
+comp:["I merge intervals without notes","I understand when greedy is valid vs DP","I solved Jump Game II","I explain the gas station greedy insight"]},
+
+p12:{icon:"🔡",title:"Tries",sub:"Prefix tree for fast string lookups. O(m) search regardless of dictionary size.",xp:200,
+theory:"A Trie is a tree where each path from root to node spells out a prefix. Root is empty. Each node has up to 26 children (one per letter). Search any word in O(m) where m is word length.\n\n<strong>Each Trie node has:</strong>\n- children: dict mapping characters to child nodes\n- is_end: boolean marking if this node completes a word\n\n<strong>Insert:</strong> Walk down the trie, creating nodes as needed. Set is_end = True at last character.\n\n<strong>Search:</strong> Walk down following characters. Fall off the trie → return False. Reach last character → check is_end.\n\n<strong>StartsWith:</strong> Same as search but do not check is_end.\n\n<strong>Trie beats HashMap when:</strong> you need prefix matching. HashMap cannot efficiently answer 'does any word start with pre?' — Trie can in O(m).",
+triggers:["prefix","autocomplete","starts with","dictionary","word search II","add word","search with wildcard","implement trie","word list","longest word"],
+example:{problem:"Implement Trie with insert, search, startsWith.",thinking:"Step 1: Need insert, exact search, prefix search → Trie.\nStep 2: Each node needs children dict and is_end flag.\nStep 3: Insert: traverse chars, create missing nodes, set is_end at last char.\nStep 4: Search: traverse chars, return False if missing, check is_end at end.\nStep 5: StartsWith: same as search but return True if traversal completes — no is_end check.",code:`<span class="kw">class</span> <span class="fn">TrieNode</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        self.children = {}
+        self.is_end = <span class="kw">False</span>
+
+<span class="kw">class</span> <span class="fn">Trie</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self): self.root = <span class="fn">TrieNode</span>()
+    <span class="kw">def</span> <span class="fn">insert</span>(self, word):
+        node = self.root
+        <span class="kw">for</span> ch <span class="kw">in</span> word:
+            <span class="kw">if</span> ch <span class="kw">not in</span> node.children:
+                node.children[ch] = <span class="fn">TrieNode</span>()
+            node = node.children[ch]
+        node.is_end = <span class="kw">True</span>
+    <span class="kw">def</span> <span class="fn">search</span>(self, word):
+        node = self.root
+        <span class="kw">for</span> ch <span class="kw">in</span> word:
+            <span class="kw">if</span> ch <span class="kw">not in</span> node.children: <span class="kw">return False</span>
+            node = node.children[ch]
+        <span class="kw">return</span> node.is_end`},
+mistakes:[{n:"1",t:"Returning True in search without checking is_end",f:"Fix: Reaching last character is not enough — must check is_end. 'app' exists does not mean 'ap' exists."},{n:"2",t:"Confusing search vs startsWith",f:"Fix: Search checks is_end. StartsWith just checks all characters exist — no is_end needed."},{n:"3",t:"Creating a new Trie per query",f:"Fix: Build the Trie once from all words, then query it multiple times."}],
+tasks:[{type:"solve",text:"Implement Trie — do it from scratch, understand every line"},{type:"solve",text:"Design Add and Search Words — Trie with wildcard dot"},{type:"solve",text:"Word Search II — Trie combined with Backtracking"},{type:"code",text:"Implement Trie from scratch without looking at notes"}],
+problems:[{n:"Implement Trie",d:"M",id:"p12a"},{n:"Design Add Search Words",d:"M",id:"p12b"},{n:"Word Search II",d:"H",id:"p12c"},{n:"Longest Word in Dictionary",d:"M",id:"p12d"},{n:"Replace Words",d:"M",id:"p12e"}],
+comp:["I implement Trie from scratch","I know search vs startsWith difference","I solved Design Add Search Words","I know when Trie beats HashMap"]},
+
+p13:{icon:"🧮",title:"Bit Manipulation",sub:"XOR tricks, masking, shifting. Rare but signals strong CS fundamentals.",xp:150,
+theory:"Computers store everything in binary. Bit manipulation operates directly on those bits.\n\n<strong>Key operations:</strong>\n- AND (&): both bits must be 1. Used to check or clear bits.\n- OR (|): at least one bit is 1. Used to set bits.\n- XOR (^): bits are different. Used to toggle bits.\n- Left shift (<<): multiply by 2. x<<1 = x*2\n- Right shift (>>): divide by 2. x>>1 = x//2\n\n<strong>XOR trick:</strong> x^x=0 (same number cancels). x^0=x (zero has no effect). XOR all numbers in array where every number appears twice except one — pairs cancel, unique number remains.\n\n<strong>Check power of 2:</strong> n & (n-1) == 0. Powers of 2 have exactly one bit. Subtracting 1 flips lower bits. AND gives zero only if one bit was set.\n\n<strong>Count set bits:</strong> n & (n-1) removes lowest set bit. Count iterations until zero.",
+triggers:["single number","missing number","XOR","power of 2","count bits","set bit","swap without temp","odd times","bitwise","bit"],
+example:{problem:"Single Number — every element appears twice except one. Find it.",thinking:"Step 1: Find unique number among pairs → XOR trick.\nStep 2: XOR all numbers together.\nStep 3: Pairs cancel out (x^x=0). Zero identity (x^0=x).\nStep 4: Result is the single number. O(n) time, O(1) space.",code:`<span class="kw">def</span> <span class="fn">single_number</span>(nums):
+    result = <span class="nm">0</span>
+    <span class="kw">for</span> num <span class="kw">in</span> nums:
+        result ^= num  <span class="cm"># pairs cancel: x^x=0</span>
+    <span class="kw">return</span> result  <span class="cm"># only unique number remains</span>
+    <span class="cm"># Time: O(n). Space: O(1) — beats HashMap</span>`},
+mistakes:[{n:"1",t:"Using HashMap when XOR gives O(1) space",f:"Fix: For finding the one appearing odd times — always XOR. HashMap wastes space."},{n:"2",t:"Forgetting XOR is commutative and associative",f:"Fix: Order does not matter — XOR in any order gives same result."},{n:"3",t:"Forcing bit manipulation on problems that do not need it",f:"Fix: Bit manipulation shines on single element among pairs, powers of 2, counting bits. Do not force it."}],
+tasks:[{type:"solve",text:"Single Number — XOR trick, know cold"},{type:"solve",text:"Number of 1 Bits — count set bits"},{type:"solve",text:"Counting Bits — DP combined with bit manipulation"},{type:"solve",text:"Reverse Bits — shift and build"},{type:"solve",text:"Missing Number — XOR or math approach"},{type:"solve",text:"Sum of Two Integers — add without plus operator"}],
+problems:[{n:"Single Number",d:"E",id:"p13a"},{n:"Number of 1 Bits",d:"E",id:"p13b"},{n:"Counting Bits",d:"E",id:"p13c"},{n:"Reverse Bits",d:"E",id:"p13d"},{n:"Missing Number",d:"E",id:"p13e"},{n:"Sum Two Integers",d:"M",id:"p13f"},{n:"Bitwise AND Range",d:"M",id:"p13g"}],
+comp:["I know XOR properties cold","I solve Single Number without notes","I implement count set bits two ways","I explain power of 2 check"]}
+};
+
+const NEW_PATTERNS = {
+p14:{icon:"🐢",title:"Fast & Slow Pointers",sub:"Two pointers at different speeds. Detects cycles. Finds midpoints. Floyd's algorithm.",xp:200,
+theory:"Two pointers move through the list at different speeds. Fast moves 2 steps per iteration, slow moves 1 step.\n\n<strong>Finding middle:</strong> When fast reaches the end, slow is exactly at the middle. Used in palindrome linked list and merge sort on linked list.\n\n<strong>Cycle detection — Floyd's algorithm:</strong> If a cycle exists, fast will eventually lap slow and they will meet inside the cycle. If no cycle, fast reaches null first.\n\n<strong>Finding cycle start:</strong> Once fast and slow meet, reset one pointer to head. Move both one step at a time. Where they meet again is the cycle start.\n\n<strong>Happy Number:</strong> Keep replacing number with sum of squares of its digits. If it cycles (not to 1), it is not happy. Fast/slow detects the cycle.\n\n<strong>Key advantage:</strong> O(1) space instead of O(n) HashSet to track visited nodes.",
+triggers:["cycle in linked list","middle of linked list","palindrome linked list","happy number","find duplicate","circular","loop","tortoise and hare","floyd"],
+example:{problem:"Linked List Cycle — detect if a linked list has a cycle.",thinking:"Step 1: Detect cycle without extra space → fast/slow pointers.\nStep 2: Fast moves 2 steps, slow moves 1 step per iteration.\nStep 3: If cycle exists, fast eventually catches slow — they meet.\nStep 4: If fast reaches null → no cycle.\nStep 5: Meeting at any point → return True.",code:`<span class="kw">def</span> <span class="fn">has_cycle</span>(head):
+    slow = fast = head
+    <span class="kw">while</span> fast <span class="kw">and</span> fast.next:
+        slow = slow.next        <span class="cm"># 1 step</span>
+        fast = fast.next.next   <span class="cm"># 2 steps</span>
+        <span class="kw">if</span> slow == fast:
+            <span class="kw">return True</span>
+    <span class="kw">return False</span>
+    <span class="cm"># Time: O(n). Space: O(1)</span>`},
+mistakes:[{n:"1",t:"Checking fast == slow before moving pointers",f:"Fix: Move first then check. Both start at head — checking first returns True immediately."},{n:"2",t:"Not checking fast.next before fast.next.next",f:"Fix: Always check 'while fast and fast.next' — otherwise crashes when fast is at last node."},{n:"3",t:"Using HashSet instead of fast/slow",f:"Fix: HashSet works but O(n) space. Fast/slow gives O(1). Interviewers want fast/slow."}],
+tasks:[{type:"solve",text:"Linked List Cycle — detect cycle"},{type:"solve",text:"Linked List Cycle II — find where cycle starts"},{type:"solve",text:"Middle of Linked List — slow ends at middle"},{type:"solve",text:"Happy Number — cycle detection on numbers"},{type:"solve",text:"Find Duplicate Number — treat array as linked list"}],
+problems:[{n:"Linked List Cycle",d:"E",id:"p14a"},{n:"Linked List Cycle II",d:"M",id:"p14b"},{n:"Middle of Linked List",d:"E",id:"p14c"},{n:"Happy Number",d:"E",id:"p14d"},{n:"Find Duplicate Number",d:"M",id:"p14e"},{n:"Palindrome Linked List",d:"E",id:"p14f"}],
+comp:["I implement Floyd's algorithm from scratch","I explain why fast/slow detects cycles","I solved Find Duplicate Number using fast/slow","I know fast/slow beats HashSet for space"]},
+
+p15:{icon:"📈",title:"Kadane's Algorithm",sub:"Maximum subarray in O(n). The classic extend-or-restart decision at every step.",xp:200,
+theory:"Kadane's finds the maximum sum subarray in a single pass.\n\n<strong>The decision at every step:</strong> Should I extend the current subarray by including this element? Or restart a new subarray starting here?\n\n- Extend if current element + running_sum is better than current element alone\n- Restart if current element alone is better than extending\n\nIn code: max_here = max(num, max_here + num)\n\n<strong>Why it works:</strong> If everything before this point sums to something negative, including it only hurts. Start fresh. If positive, include it — it helps.\n\n<strong>Product variant:</strong> Track both max and min at each step. Two negatives multiply to a positive — the minimum can become the maximum after multiplying by a negative number.\n\n<strong>Circular variant:</strong> max of normal Kadane vs total_sum minus minimum subarray sum.",
+triggers:["maximum subarray","maximum sum","contiguous subarray","product subarray","circular subarray","maximum product","minimum subarray","largest sum"],
+example:{problem:"Maximum Subarray — find the contiguous subarray with the largest sum.",thinking:"Step 1: Maximum contiguous subarray → Kadane's algorithm.\nStep 2: At each position decide: extend current subarray or start fresh.\nStep 3: max_here = max(num, max_here + num)\nStep 4: If adding this number hurts more than starting fresh, restart.\nStep 5: Track global max throughout — never reset it.",code:`<span class="kw">def</span> <span class="fn">max_subarray</span>(nums):
+    max_here = max_global = nums[<span class="nm">0</span>]
+    <span class="kw">for</span> num <span class="kw">in</span> nums[<span class="nm">1</span>:]:
+        max_here = <span class="fn">max</span>(num, max_here + num)  <span class="cm"># extend or restart</span>
+        max_global = <span class="fn">max</span>(max_global, max_here)
+    <span class="kw">return</span> max_global
+    <span class="cm"># Time: O(n). Space: O(1)</span>`},
+mistakes:[{n:"1",t:"Initializing to 0 instead of nums[0]",f:"Fix: Initialize to nums[0]. If all numbers are negative, 0 would be wrong — answer must be an actual element."},{n:"2",t:"Forgetting to track global max separately",f:"Fix: max_here resets when you restart. max_global never resets — stores best seen so far."},{n:"3",t:"Not knowing the product variant needs min tracking",f:"Fix: For max product, track both max_p and min_p. Negative times negative becomes positive."}],
+tasks:[{type:"solve",text:"Maximum Subarray — implement Kadane's from scratch"},{type:"solve",text:"Maximum Product Subarray — track both min and max"},{type:"solve",text:"Maximum Sum Circular Subarray — circular variant"},{type:"code",text:"Implement Kadane's without looking at notes — under 6 lines"}],
+problems:[{n:"Maximum Subarray",d:"E",id:"p15a"},{n:"Maximum Product Subarray",d:"M",id:"p15b"},{n:"Max Sum Circular Subarray",d:"M",id:"p15c"},{n:"Best Time Buy Sell Stock",d:"E",id:"p15d"},{n:"Maximum Absolute Sum",d:"M",id:"p15e"}],
+comp:["I implement Kadane's without notes in 6 lines","I explain extend-or-restart decision","I solved Maximum Product Subarray","I know the circular variant approach"]},
+
+p16:{icon:"🏗",title:"System Design",sub:"Junior level. They do not expect Netflix. They expect clear thinking about how systems work.",xp:300,
+theory:"System design interviews test whether you can think about how software systems are built at a high level.\n\n<strong>What a system actually is:</strong> A collection of components that work together to store, process, and serve data to users. When you type a URL, your browser talks to a server, the server reads from a database, and sends back a response. That is a system.\n\n<strong>The 7 core building blocks — learn these:</strong>\n\n<strong>1. Client and Server:</strong> Client (browser, app) sends requests. Server processes and responds. Everything on the internet is this.\n\n<strong>2. Database:</strong> Where data lives permanently. SQL (Postgres, MySQL) = tables with rows and columns, good for structured data and complex queries. NoSQL (MongoDB, Redis) = flexible documents or key-value pairs, good for speed and scale.\n\n<strong>3. API:</strong> Contract between client and server. REST APIs use URLs and HTTP methods. GET = read. POST = create. PUT = update. DELETE = remove.\n\n<strong>4. Cache:</strong> Fast temporary storage. Instead of hitting the database every time (slow), store frequent data in memory (fast). Redis is the most common. Trade-off: data might be slightly stale.\n\n<strong>5. Load Balancer:</strong> One server cannot handle millions of users. Load balancer sits in front of many servers and distributes requests evenly. Like a traffic cop for web traffic.\n\n<strong>6. Message Queue:</strong> When one part of system tells another to do something without waiting. Like dropping a letter in a mailbox — you do not wait for delivery. Kafka and RabbitMQ are examples.\n\n<strong>7. CDN:</strong> Servers worldwide storing copies of your static files. Users get files from nearby servers. Faster. Less load on your servers.\n\n<strong>CAP Theorem:</strong> In distributed systems you can only guarantee two of three — Consistency (all nodes see same data), Availability (system always responds), Partition Tolerance (works if network breaks). You always need partition tolerance so you choose between consistency and availability.\n\n<strong>The 5-step framework for any design question:</strong>\n1. Clarify requirements — ask questions first\n2. Define the API\n3. Design the data model\n4. High level architecture diagram\n5. Scale — where are the bottlenecks?",
+triggers:["design a system","how would you build","how does X work","scale this","architecture","URL shortener","chat application","rate limiter","what happens when you type a URL","database choice","caching","notification system"],
+example:{problem:"Design a URL Shortener — the most common junior system design question.",thinking:`Step 1 — Clarify requirements:
+What does it do? Takes long URL, returns short URL. Visiting short URL redirects to long URL.
+How many users? Start small, design to scale later.
+Any extra features? Expiry? Analytics? Custom codes?
+
+Step 2 — Define the API:
+POST /shorten → input {long_url} → output {short_url}
+GET /{short_code} → redirect to long URL
+
+Step 3 — Data model:
+Table: urls
+- id (auto increment primary key)
+- short_code (6 chars, indexed for fast lookup)
+- long_url (the original URL)
+- created_at, expires_at
+
+Step 4 — Short code generation:
+Option A: Random 6-char string, check DB for collision, retry if needed.
+Option B: Hash long URL (MD5), take first 6 chars.
+Option C: Base62 encode the database auto-increment ID. Best for scale.
+
+Step 5 — Scaling:
+Cache popular short codes in Redis (most URLs get traffic in first 24 hours).
+Read traffic >> write traffic — optimize reads with cache.`,
+  code:`<span class="cm"># Base62 encoding of DB auto-increment ID</span>
+CHARS = <span class="st">"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"</span>
+
+<span class="kw">def</span> <span class="fn">encode</span>(num):
+    result = []
+    <span class="kw">while</span> num:
+        result.append(CHARS[num % <span class="nm">62</span>])
+        num //= <span class="nm">62</span>
+    <span class="kw">return</span> <span class="st">""</span>.join(reversed(result))
+
+<span class="cm"># POST /shorten</span>
+<span class="kw">def</span> <span class="fn">shorten</span>(long_url):
+    row = db.<span class="fn">insert</span>(long_url=long_url)   <span class="cm"># get auto ID</span>
+    code = <span class="fn">encode</span>(row.id)                <span class="cm"># base62 encode</span>
+    cache.<span class="fn">set</span>(code, long_url, ttl=<span class="nm">3600</span>) <span class="cm"># cache 1 hour</span>
+    <span class="kw">return</span> <span class="st">f"short.ly/{code}"</span>
+
+<span class="cm"># GET /{code}</span>
+<span class="kw">def</span> <span class="fn">redirect</span>(code):
+    url = cache.<span class="fn">get</span>(code)               <span class="cm"># cache first</span>
+    <span class="kw">if not</span> url:
+        url = db.<span class="fn">find</span>(short_code=code)   <span class="cm"># fallback DB</span>
+        cache.<span class="fn">set</span>(code, url)
+    <span class="kw">return</span> <span class="fn">redirect_to</span>(url)             <span class="cm"># 301 redirect</span>`},
+mistakes:[{n:"1",t:"Designing the perfect system immediately without asking questions",f:"Fix: Always clarify requirements first. Asking questions shows maturity and saves you from designing the wrong thing."},{n:"2",t:"Using buzzwords without explaining what problem they solve",f:"Fix: Never say 'add Kafka' or 'use Redis' without explaining why. What problem does it solve here specifically?"},{n:"3",t:"Starting with scale when the basics are not clear",f:"Fix: Start simple — one server, one database. Add complexity only when the interviewer asks how you would scale."}],
+tasks:[
+  {type:"read",text:"Understand: SQL vs NoSQL — what each is and when to use which"},
+  {type:"read",text:"Understand: what is a cache and why Redis is everywhere"},
+  {type:"read",text:"Understand: what happens when you type a URL — the full request flow"},
+  {type:"read",text:"Understand: REST API — GET POST PUT DELETE and what they mean"},
+  {type:"read",text:"Understand: horizontal vs vertical scaling — what is the difference"},
+  {type:"solve",text:"Practice out loud: Design a URL Shortener using the 5-step framework"},
+  {type:"solve",text:"Practice out loud: Design a basic rate limiter"},
+  {type:"solve",text:"Practice out loud: Design a simple chat application"},
+  {type:"solve",text:"Practice out loud: Walk through what happens when you type google.com"}
+],
+problems:[{n:"URL Shortener Design",d:"E",id:"p16a"},{n:"Rate Limiter Design",d:"E",id:"p16b"},{n:"Basic Chat App Design",d:"M",id:"p16c"},{n:"Pastebin Design",d:"E",id:"p16d"},{n:"Instagram Feed Basic",d:"M",id:"p16e"},{n:"Parking Lot Design",d:"E",id:"p16f"},{n:"URL to Browser Flow",d:"E",id:"p16g"},{n:"SQL vs NoSQL Decision",d:"E",id:"p16h"},{n:"Design a Cache Layer",d:"M",id:"p16i"},{n:"Notification System Basic",d:"M",id:"p16j"}],
+comp:["I explain what a load balancer does without jargon","I know SQL vs NoSQL and when to choose each","I walk through URL shortener design in 5 minutes","I explain caching without jargon","I ask clarifying questions before designing anything"]}
+};
+
+Object.assign(D, NEW_PATTERNS);[{min:0,name:"ARRAY WALKER"},{min:500,name:"POINTER HANDLER"},{min:1000,name:"WINDOW MASTER"},{min:1600,name:"TREE CLIMBER"},{min:2200,name:"GRAPH EXPLORER"},{min:2800,name:"DP ARCHITECT"},{min:3400,name:"ALGORITHM MASTER"}];
+let S={t:{},p:{},c:{}};
+
+function getTotalXP(){
+  let xp=0;
+  Object.entries(D).forEach(([pid,p])=>{
+    const tD=p.tasks.filter((_,i)=>S.t[pid+'_t_'+i]).length;
+    xp+=Math.floor((tD/p.tasks.length)*(p.xp*0.3));
+    const pD=p.problems.filter(pb=>S.p[pb.id]).length;
+    xp+=Math.floor((pD/p.problems.length)*(p.xp*0.7));
+  });
+  return Math.round(xp);
+}
+
+function getRank(xp){for(let i=RANKS.length-1;i>=0;i--){if(xp>=RANKS[i].min)return i;}return 0;}
+
+function updateHeader(){
+  const xp=getTotalXP(),ri=getRank(xp),r=RANKS[ri],nx=RANKS[Math.min(ri+1,RANKS.length-1)];
+  const pct=ri===RANKS.length-1?100:Math.round(((xp-r.min)/(nx.min-r.min))*100);
+  document.getElementById('lvlbl').textContent='RANK '+ri+' — '+r.name;
+  document.getElementById('xplbl').textContent=xp+' / '+nx.min+' XP';
+  document.getElementById('xpfill').style.width=pct+'%';
+  document.getElementById('totxp').textContent=xp;
+  for(let i=0;i<RANKS.length;i++){const e=document.getElementById('r'+i);if(e)e.classList.toggle('lit',i<=ri);}
+  let td=0,dp=0,dpat=0;
+  Object.entries(D).forEach(([pid,p])=>{
+    p.tasks.forEach((_,i)=>{if(S.t[pid+'_t_'+i])td++;});
+    const solved=p.problems.filter(pb=>S.p[pb.id]).length;
+    dp+=solved;
+    if(solved===p.problems.length&&p.tasks.every((_,i)=>S.t[pid+'_t_'+i]))dpat++;
+  });
+  document.getElementById('probdone').textContent=dp;
+  document.getElementById('patdone').textContent=dpat;
+  if(dp>0)document.getElementById('b0').classList.add('earned');
+  if(dpat>=3)document.getElementById('b1').classList.add('earned');
+  if(D.p6.problems.every(pb=>S.p[pb.id]))document.getElementById('b2').classList.add('earned');
+  if(D.p10.problems.every(pb=>S.p[pb.id]))document.getElementById('b3').classList.add('earned');
+  if(ri>=5)document.getElementById('b4').classList.add('earned');
+  if(dpat===Object.keys(D).length)document.getElementById('b5').classList.add('earned');
+}
+
+function toast(t,s){
+  const e=document.getElementById('toast');
+  document.getElementById('ttitle').textContent=t;
+  document.getElementById('tsub').textContent=s;
+  e.classList.add('show');
+  setTimeout(()=>e.classList.remove('show'),2500);
+}
+
+function toggleTask(pid,idx){
+  const k=pid+'_t_'+idx;
+  S.t[k]=!S.t[k];
+  save();
+  renderPattern(pid);
+  updateHeader();
+  if(S.t[k])toast('+XP','Task complete.');
+}
+
+function toggleProblem(pbid){
+  S.p[pbid]=!S.p[pbid];
+  save();
+  // find which pattern owns this problem
+  const pid=Object.keys(D).find(k=>D[k].problems.some(pb=>pb.id===pbid));
+  if(pid)renderPattern(pid);
+  updateHeader();
+  if(S.p[pbid])toast('+XP EARNED','Problem solved. Keep going.');
+}
+
+function toggleComp(pid,idx){
+  const k=pid+'_c_'+idx;
+  S.c[k]=!S.c[k];
+  save();
+  renderPattern(pid);
+}
+
+function showPattern(pid){
+  document.querySelectorAll('.pattern').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(pid).classList.add('active');
+  const idx=Object.keys(D).indexOf(pid);
+  document.querySelectorAll('.pbtn')[idx].classList.add('active');
+  if(!document.getElementById(pid).innerHTML) renderPattern(pid);
+}
+
+function confirmReset(){
+  if(confirm('Reset ALL progress? This cannot be undone.')){
+    S={t:{},p:{},c:{}};
+    save();
+    Object.keys(D).forEach(pid=>{document.getElementById(pid).innerHTML='';});
+    renderPattern('p0');
+    updateHeader();
+    toast('RESET','Back to zero. Let us go.');
+  }
+}
+
+function renderPattern(pid){
+  const el=document.getElementById(pid);
+  if(!el)return;
+  const p=D[pid];
+  const tDone=p.tasks.filter((_,i)=>S.t[pid+'_t_'+i]).length;
+  const pDone=p.problems.filter(pb=>S.p[pb.id]).length;
+  const pct=Math.round(((tDone+pDone)/(p.tasks.length+p.problems.length))*100);
+
+  // get active tab (default 0)
+  const activeTab=parseInt(el.dataset.activeTab||'0');
+
+  let h=`<div class="plrhdr">
+    <div class="plricon">${p.icon}</div>
+    <div class="plrinfo"><h2>${p.title}</h2><p>${p.sub}</p></div>
+    <div class="plrxp"><span>${p.xp} XP</span>PATTERN REWARD<br>
+    <span style="font-size:10px;color:var(--text2)">${pct}% DONE · ${pDone}/${p.problems.length} SOLVED</span></div>
+  </div>`;
+
+  // TABS
+  const tabs=['📖 LEARN','💡 EXAMPLE','⚠️ MISTAKES','✅ PRACTICE','🏆 PROBLEMS'];
+  h+=`<div class="tabs" id="tabs_${pid}">`;
+  tabs.forEach((tab,i)=>{
+    h+=`<button class="tab ${i===activeTab?'active':''}" data-action="tab" data-pid="${pid}" data-tab="${i}">${tab}</button>`;
+  });
+  h+=`</div><div id="tabcontents_${pid}">`;
+
+  // TAB 0 — LEARN
+  h+=`<div class="tabcontent ${activeTab===0?'active':''}">
+    <div class="theory-block cyan">
+      <div class="tlbl2 cyan">PLAIN ENGLISH EXPLANATION</div>
+      <div class="theory-txt">${p.theory.replace(/\n/g,'<br>')}</div>
+    </div>
+    <div class="theory-block purple">
+      <div class="tlbl2 purple">PATTERN RECOGNITION — WHEN YOU SEE THESE WORDS, THINK ${p.title.toUpperCase()}</div>
+      <div class="triggers">${p.triggers.map(t=>`<span class="trigger">${t}</span>`).join('')}</div>
+    </div>
+  </div>`;
+
+  // TAB 1 — WORKED EXAMPLE
+  h+=`<div class="tabcontent ${activeTab===1?'active':''}">
+    <div class="theory-block green">
+      <div class="tlbl2 green">PROBLEM</div>
+      <div class="theory-txt">${p.example.problem}</div>
+    </div>
+    <div class="theory-block yellow">
+      <div class="tlbl2 yellow">THOUGHT PROCESS — HOW TO THINK THROUGH IT</div>
+      <div class="theory-txt" style="white-space:pre-line">${p.example.thinking}</div>
+    </div>
+    <div class="code-box">
+      <div class="code-lbl">SOLUTION WITH COMMENTS</div>
+      <pre>${p.example.code}</pre>
+    </div>
+  </div>`;
+
+  // TAB 2 — COMMON MISTAKES
+  h+=`<div class="tabcontent ${activeTab===2?'active':''}">
+    <div class="theory-block red">
+      <div class="tlbl2 red">COMMON MISTAKES — KNOW THESE BEFORE YOU HIT THEM</div>
+      ${p.mistakes.map(m=>`
+        <div class="mistake">
+          <div class="mnum">#${m.n}</div>
+          <div><div class="mtxt">${m.t}</div><div class="mfix">→ ${m.f}</div></div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+
+  // TAB 3 — PRACTICE TASKS
+  h+=`<div class="tabcontent ${activeTab===3?'active':''}">
+    <div class="tlbl">STUDY TASKS — COMPLETE IN ORDER</div>`;
+  p.tasks.forEach((t,ti)=>{
+    const done=S.t[pid+'_t_'+ti];
+    h+=`<div class="titem ${done?'done':''}" data-action="task" data-pid="${pid}" data-idx="${ti}">
+      <div class="tcb">${done?'✓':''}</div>
+      <span class="ttxt">${t.text}</span>
+      <span class="ttype ${t.type}">${t.type.toUpperCase()}</span>
+    </div>`;
+  });
+  if(p.comp&&p.comp.length){
+    h+=`<div class="comp" style="margin-top:14px">
+      <div class="complbl">MASTERY CHECK — TICK WHEN YOU CAN DO THIS WITHOUT NOTES</div>`;
+    p.comp.forEach((c,i)=>{
+      const done=S.c[pid+'_c_'+i];
+      h+=`<div class="citem ${done?'done':''}" data-action="comp" data-pid="${pid}" data-idx="${i}">
+        <div class="cdot"></div><span>${c}</span>
+      </div>`;
+    });
+    h+=`</div>`;
+  }
+  h+=`</div>`;
+
+  // TAB 4 — PROBLEMS
+  h+=`<div class="tabcontent ${activeTab===4?'active':''}">
+    <div class="tlbl">PROBLEMS — CLICK TO MARK SOLVED · ${pDone}/${p.problems.length} DONE</div>
+    <div class="problems-grid">`;
+  p.problems.forEach(pb=>{
+    const done=S.p[pb.id];
+    h+=`<div class="prob-item ${done?'done':''}" data-action="prob" data-pbid="${pb.id}">
+      <div class="prob-cb">${done?'✓':''}</div>
+      <span class="prob-name">${pb.n}</span>
+      <span class="prob-diff ${pb.d}">${pb.d}</span>
+    </div>`;
+  });
+  h+=`</div></div>`;
+  h+=`</div>`; // close tabcontents
+
+  el.innerHTML=h;
+  el.dataset.activeTab=activeTab;
+
+  // update nav buttons done state
+  document.querySelectorAll('.pbtn').forEach((btn,idx)=>{
+    const id=Object.keys(D)[idx];
+    const pp=D[id];
+    const all=pp.tasks.every((_,i)=>S.t[id+'_t_'+i])&&pp.problems.every(pb=>S.p[pb.id]);
+    btn.classList.toggle('done',all);
+  });
+}
+
+// single event delegation listener
+document.addEventListener('click',e=>{
+  // pattern nav
+  const patBtn=e.target.closest('[data-pattern]');
+  if(patBtn){showPattern(patBtn.dataset.pattern);return;}
+
+  // tab switch
+  const tabBtn=e.target.closest('[data-action="tab"]');
+  if(tabBtn){
+    const pid=tabBtn.dataset.pid;
+    const tab=+tabBtn.dataset.tab;
+    const el=document.getElementById(pid);
+    if(el)el.dataset.activeTab=tab;
+    const allTabs=document.querySelectorAll('#tabs_'+pid+' .tab');
+    const allContents=document.querySelectorAll('#tabcontents_'+pid+' .tabcontent');
+    allTabs.forEach((t,i)=>t.classList.toggle('active',i===tab));
+    allContents.forEach((c,i)=>c.classList.toggle('active',i===tab));
+    return;
+  }
+
+  // task checkbox
+  const taskEl=e.target.closest('[data-action="task"]');
+  if(taskEl){toggleTask(taskEl.dataset.pid,+taskEl.dataset.idx);return;}
+
+  // problem checkbox
+  const probEl=e.target.closest('[data-action="prob"]');
+  if(probEl){toggleProblem(probEl.dataset.pbid);return;}
+
+  // competency checkbox
+  const compEl=e.target.closest('[data-action="comp"]');
+  if(compEl){toggleComp(compEl.dataset.pid,+compEl.dataset.idx);return;}
+
+  // reset
+  if(e.target.closest('#resetBtn')){confirmReset();return;}
+});
+
+// init
+loadFB().then(loaded=>{
+  S=loaded;
+  renderPattern('p0');
+  updateHeader();
+});
+
+</script>
+</body>
+</html>
